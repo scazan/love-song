@@ -1,3 +1,4 @@
+p = require("./patterns")();
 var _ = require('underscore');
 
 
@@ -52,44 +53,68 @@ triggerNoteStereo = function(freqs, synths) {
 // c.amount = 12
 
 sampler = new Gibberish.Sampler({ file:'/samples/cuernavaca1.wav' }).connect();
-sampler.note(0.4);
+//sampler.note(0.4);
 
-Pseq = function* Pseq(values, repetitions){
-	var index = 0;
-	var result = () => values[index++ % values.length];
+notes = p.Pseq([6,1,9]);
+durations = p.Prand([11025, 22050]);
 
-	if(repetitions == undefined) {
-		while(true) {
-			yield result();
+//seq = new Gibberish.Sequencer({ target:sampler, key:'note', durations: p.Pattern(durations), values: p.Pattern(notes) }).start()
+
+
+
+
+
+
+
+/// Markov test
+
+createTransitionMatrix = function(input, order) {
+	let dictionary = input.filter(function(elem, pos) {
+		  return input.indexOf(elem) == pos;
+	});
+
+	let combinations = [];
+	for(let i=0; i < dictionary.length; i++) {
+		for(let k=0; k < dictionary.length; k++) {
+			combinations.push([dictionary[i], dictionary[k]]);
 		}
 	}
-	else {
-		for(var i=0; i<repetitions; i++) {
-			yield result();
+
+
+	let transitionMatrix = [];
+	for(let i=0; i < combinations.length; i++) {
+		let dictionaryLengthArray = [];
+		
+		for(k=0; k < dictionary.length; k++) {
+			dictionaryLengthArray.push(0);
 		}
+
+		transitionMatrix.push(dictionaryLengthArray);
 	}
+
+	for(let i=1; i < input.length; i++) {
+		let currentState = [ input[i-(order-1)], input[i] ];
+
+		let indexOfCurrentState = _.findIndex(combinations, (item) => {
+			return _.isEqual(currentState, item);
+		});
+
+		//console.log(indexOfCurrentState, currentState);
+
+		// We are assuming a wrapping input
+		let nextState = input[(i+1) % input.length];
+		let dictionaryIndexOfNextState = dictionary.indexOf(nextState);
+
+		console.log(currentState, nextState);
+		// increment the amount of times this transition has occurred
+		transitionMatrix[indexOfCurrentState][dictionaryIndexOfNextState]++;
+
+	}
+
+	transitionMatrix = transitionMatrix.map( (dim1) => {
+		let dim1Sum = dim1.reduce((a,b) => a+b);
+		return dim1Sum > 0 ? dim1.map( (weight) => weight / dim1Sum) : dim1.map(() => 0); // using input.length because we assume wrapping (as opposed to input.length-1 for no wrapping)
+	});
+
+	return transitionMatrix;
 };
-
-Prand = function* Prand(values, repetitions){
-
-	var result = () => values[Math.floor(Math.random() * values.length)];
-
-	if(repetitions == undefined) {
-		while(true) {
-			yield result();
-		}
-	}
-	else {
-		for(var i=0; i<repetitions; i++) {
-			yield result();
-		}
-	}
-};
-
-
-notes = Pseq([6,1,9]);
-
-seq = new Gibberish.Sequencer({ target:sampler, key:'note', durations:[11025, 22050], values: [function() { return notes.next().value;}] }).start()
-
-
-
