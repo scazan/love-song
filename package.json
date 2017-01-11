@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server/planetCounter.js",
-    "build": "npm run buildSCSS && browserify -t brfs app/scripts/main.js -o server/dist/scripts/main.js && cp -r ./app/index.html ./server/dist/index.html && cp -r ./app/img/* ./server/dist/img/",
+    "build": "npm run buildSCSS && browserify -t brfs app/scripts/main.js -o server/dist/scripts/main.js && cp -r ./app/index.html ./server/dist/index.html && cp -r ./app/img/* ./server/dist/img/ && cp -r ./app/samples/* ./server/dist/samples/",
     "copyAppToDist": "cp -r ./app/* ./server/dist/",
     "sync": "./buildScripts/sync.sh",
     "buildSCSS": "./buildScripts/buildSCSS.sh"
