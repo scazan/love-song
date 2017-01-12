@@ -64,57 +64,101 @@ durations = p.Prand([11025, 22050]);
 
 
 
+// Tools
 
+let utils = {
+	normalize: (coll) => {
+		let collSum = coll.reduce((a,b) => a+b);
+		return collSum > 0 ? coll.map( (weight) => weight / collSum) : coll.map(() => 0);
+	},
+	windex: (weights) => {
+		let sumOfWeights = weights.reduce( (prev, curr) => prev + curr);
 
-/// Markov test
+		let randNum = Math.random() * sumOfWeights;
+		let weightSum = 0;
 
-createTransitionMatrix = function(input, order) {
-	let dictionary = input.filter(function(elem, pos) {
-		  return input.indexOf(elem) == pos;
-	});
+		for (let i = 0; i < weights.length; i++) {
+			weightSum += weights[i];
+			weightSum = +weightSum.toFixed(2);
 
-	let combinations = [];
-	for(let i=0; i < dictionary.length; i++) {
-		for(let k=0; k < dictionary.length; k++) {
-			combinations.push([dictionary[i], dictionary[k]]);
+			if (randNum <= weightSum) {
+				return i;
+			}
 		}
+	},
+};
+
+
+class Markov {
+	constructor(input, order) {
+		this.dictionary = [],
+		this.combinations = [];
+
+		this.transitionMatrix = this.createTransitionMatrix(input, order);
 	}
 
+	createTransitionMatrix(input, order) {
 
-	let transitionMatrix = [];
-	for(let i=0; i < combinations.length; i++) {
-		let dictionaryLengthArray = [];
-		
-		for(k=0; k < dictionary.length; k++) {
-			dictionaryLengthArray.push(0);
-		}
-
-		transitionMatrix.push(dictionaryLengthArray);
-	}
-
-	for(let i=1; i < input.length; i++) {
-		let currentState = [ input[i-(order-1)], input[i] ];
-
-		let indexOfCurrentState = _.findIndex(combinations, (item) => {
-			return _.isEqual(currentState, item);
+		this.dictionary = input.filter(function(elem, pos) {
+			return input.indexOf(elem) == pos;
 		});
 
-		//console.log(indexOfCurrentState, currentState);
+		this.combinations = [];
+		for(let i=0; i < this.dictionary.length; i++) {
+			for(let k=0; k < this.dictionary.length; k++) {
+				this.combinations.push([this.dictionary[i], this.dictionary[k]]);
+			}
+		}
 
-		// We are assuming a wrapping input
-		let nextState = input[(i+1) % input.length];
-		let dictionaryIndexOfNextState = dictionary.indexOf(nextState);
 
-		console.log(currentState, nextState);
-		// increment the amount of times this transition has occurred
-		transitionMatrix[indexOfCurrentState][dictionaryIndexOfNextState]++;
+		let transitionMatrix = [];
+		for(let i=0; i < this.combinations.length; i++) {
+			let dictionaryLengthArray = [];
 
+			for(let k=0; k < this.dictionary.length; k++) {
+				dictionaryLengthArray.push(0);
+			}
+
+			transitionMatrix.push(dictionaryLengthArray);
+		}
+
+		for(let i=1; i < input.length; i++) {
+			let currentState = [ input[i-(order-1)], input[i] ];
+
+			let indexOfCurrentState = _.findIndex(this.combinations, (item) => {
+				return _.isEqual(currentState, item);
+			});
+
+			// We are assuming a wrapping input
+			let nextState = input[(i+1) % input.length];
+			let dictionaryIndexOfNextState = this.dictionary.indexOf(nextState);
+
+			// increment the amount of times this transition has occurred
+			transitionMatrix[indexOfCurrentState][dictionaryIndexOfNextState]++;
+
+		}
+
+
+		transitionMatrix = transitionMatrix.map( utils.normalize );
+
+		return transitionMatrix;
 	}
 
-	transitionMatrix = transitionMatrix.map( (dim1) => {
-		let dim1Sum = dim1.reduce((a,b) => a+b);
-		return dim1Sum > 0 ? dim1.map( (weight) => weight / dim1Sum) : dim1.map(() => 0); // using input.length because we assume wrapping (as opposed to input.length-1 for no wrapping)
-	});
 
-	return transitionMatrix;
+	getNextState(state) {
+		const transitionMatrix = this.transitionMatrix;
+
+		let indexOfCurrentState = _.findIndex(this.combinations, (item) => {
+			return _.isEqual(state, item);
+		});
+
+		let probabilities = transitionMatrix[indexOfCurrentState];
+
+		let nextIndex = utils.windex( probabilities );
+
+		return this.dictionary[nextIndex];
+	}
+
 };
+
+GG = Markov;
