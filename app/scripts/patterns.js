@@ -1,9 +1,12 @@
 /*
  * Basic Patterns implementation for Gibberish
  */
+
+let Markov = require("./Markov")();
+
 module.exports = function() {
 
-	return {
+	let Patterns = {
 		Pattern: (pattern) => [() => pattern.next().value],
 
 		Pseq: function* Pseq(values, repetitions){
@@ -37,6 +40,27 @@ module.exports = function() {
 				}
 			}
 		},
+
+		Pmarkov: function* Pmarkov(seed, order, initialState) {
+			let markovChain = new Markov(seed, order);
+
+			let lastState = initialState;
+
+			while(true) {
+				let nextState = markovChain.getNextState(lastState);
+
+				lastState = [lastState[lastState.length-1], nextState];
+
+				yield nextState;
+			}
+		},
+		exportToScope: (namespace) => {
+			for (var key in Patterns) {
+				namespace[key] = Patterns[key];
+			}
+		},
 	};
+
+	return Patterns;
 
 };

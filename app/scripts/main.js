@@ -1,4 +1,5 @@
-p = require("./patterns")();
+let p = require("./patterns")();
+p.exportToScope(window);
 var _ = require('underscore');
 
 
@@ -24,10 +25,11 @@ sineMod = new G.Sine(0.2, 30);
 
 //a = new Gibberish.PolyFM({ cmRatio:9, index:3, attack:88200, decay:88200 * 10, maxVoices:20 });
 stereoBus = new Gibberish.Bus2();
-a = new Gibberish.PolyFM({ cmRatio:19, index:3, attack:88200, decay:88200 * 30, maxVoices:20, pan: -1 }).connect(stereoBus);
-f = new Gibberish.PolyFM({ cmRatio:19, index:3, attack:88200, decay:88200 * 30, maxVoices:20, pan: 1}).connect(stereoBus);
+a = new Gibberish.PolyFM({ cmRatio:19, index:3, attack:88200, decay:88200 * 30, maxVoices:20, pan: -1 }).connect();
+f = new Gibberish.PolyFM({ cmRatio:19, index:3, attack:88200, decay:88200 * 30, maxVoices:20, pan: 1}).connect();
 
-b = new Gibberish.Distortion({ input: stereoBus, amount:3 });
+//b = new Gibberish.Distortion({ input: stereoBus, amount:3 });
+b = new Gibberish.Distortion({ input: stereoBus, amount:40 });
 //c = new Gibberish.Flanger({input:b, rate: 12.0, amount:125, feedback:.5}).connect();
 c = new Gibberish.Flanger({input:b, rate: Add(12.0, sineMod), amount:125, feedback:.5, pan: -1}).connect();
 //reverb = new G.Reverb({input:c, damping: 0.2});
@@ -51,114 +53,21 @@ triggerNoteStereo = function(freqs, synths) {
 
 // Sometimes
 // c.amount = 12
+c.amount = 615;
 
-sampler = new Gibberish.Sampler({ file:'/samples/cuernavaca1.wav' }).connect();
-//sampler.note(0.4);
+sampler = new Gibberish.Sampler({ file:'/samples/cuernavaca1.wav' }).connect(stereoBus);
+sampler.amp = 4;
+sampler.note(0.4);
 
-notes = p.Pseq([6,1,9]);
-durations = p.Prand([11025, 22050]);
+notes = Pmarkov([6,0.1, 5, 3, 9, 0.2, 9, 5, 0.2, 0.1, 0.3], 2, [6, 0.1]);
+//notes = Pmarkov([6,0.1, 5, 3, 9, 0.2, 9, 5, 0.2], 2, [6, 0.1]);
+durations = Prand([11025, 22050]);
+let SR = 44100;
+durations = Prand([SR * 0.25, SR*1, SR * 0.1]);
+//durations = Prand([44100 * 1]);
 
-//seq = new Gibberish.Sequencer({ target:sampler, key:'note', durations: p.Pattern(durations), values: p.Pattern(notes) }).start()
-
-
-
-
-
-// Tools
-
-let utils = {
-	normalize: (coll) => {
-		let collSum = coll.reduce((a,b) => a+b);
-		return collSum > 0 ? coll.map( (weight) => weight / collSum) : coll.map(() => 0);
-	},
-	windex: (weights) => {
-		let sumOfWeights = weights.reduce( (prev, curr) => prev + curr);
-
-		let randNum = Math.random() * sumOfWeights;
-		let weightSum = 0;
-
-		for (let i = 0; i < weights.length; i++) {
-			weightSum += weights[i];
-			weightSum = +weightSum.toFixed(2);
-
-			if (randNum <= weightSum) {
-				return i;
-			}
-		}
-	},
-};
+seq = new Gibberish.Sequencer({ target:sampler, key:'note', durations: [() => durations.next().value], values: [() => notes.next().value]  }).start()
+flangerSeq = new Gibberish.Sequencer({ target: c, key:'feedback', durations: [SR*5], values: [() => c.feedback < 0.9 ? c.feedback+0.05 : 0.9]  }).start()
+flangerSeqAmount = new Gibberish.Sequencer({ target: c, key:'amount', durations: [SR*2], values: [() => c.amount < 5000 ? c.amount+100 : 5000]  }).start()
 
 
-class Markov {
-	constructor(input, order) {
-		this.dictionary = [],
-		this.combinations = [];
-
-		this.transitionMatrix = this.createTransitionMatrix(input, order);
-	}
-
-	createTransitionMatrix(input, order) {
-
-		this.dictionary = input.filter(function(elem, pos) {
-			return input.indexOf(elem) == pos;
-		});
-
-		this.combinations = [];
-		for(let i=0; i < this.dictionary.length; i++) {
-			for(let k=0; k < this.dictionary.length; k++) {
-				this.combinations.push([this.dictionary[i], this.dictionary[k]]);
-			}
-		}
-
-
-		let transitionMatrix = [];
-		for(let i=0; i < this.combinations.length; i++) {
-			let dictionaryLengthArray = [];
-
-			for(let k=0; k < this.dictionary.length; k++) {
-				dictionaryLengthArray.push(0);
-			}
-
-			transitionMatrix.push(dictionaryLengthArray);
-		}
-
-		for(let i=1; i < input.length; i++) {
-			let currentState = [ input[i-(order-1)], input[i] ];
-
-			let indexOfCurrentState = _.findIndex(this.combinations, (item) => {
-				return _.isEqual(currentState, item);
-			});
-
-			// We are assuming a wrapping input
-			let nextState = input[(i+1) % input.length];
-			let dictionaryIndexOfNextState = this.dictionary.indexOf(nextState);
-
-			// increment the amount of times this transition has occurred
-			transitionMatrix[indexOfCurrentState][dictionaryIndexOfNextState]++;
-
-		}
-
-
-		transitionMatrix = transitionMatrix.map( utils.normalize );
-
-		return transitionMatrix;
-	}
-
-
-	getNextState(state) {
-		const transitionMatrix = this.transitionMatrix;
-
-		let indexOfCurrentState = _.findIndex(this.combinations, (item) => {
-			return _.isEqual(state, item);
-		});
-
-		let probabilities = transitionMatrix[indexOfCurrentState];
-
-		let nextIndex = utils.windex( probabilities );
-
-		return this.dictionary[nextIndex];
-	}
-
-};
-
-GG = Markov;
