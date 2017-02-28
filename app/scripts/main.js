@@ -61,13 +61,29 @@ sampler.note(0.4);
 
 notes = Pmarkov([6,0.1, 5, 3, 9, 0.2, 9, 5, 0.2, 0.1, 0.3], 2, [6, 0.1]);
 //notes = Pmarkov([6,0.1, 5, 3, 9, 0.2, 9, 5, 0.2], 2, [6, 0.1]);
+
 durations = Prand([11025, 22050]);
 let SR = 44100;
 durations = Prand([SR * 0.25, SR*1, SR * 0.1]);
-//durations = Prand([44100 * 1]);
 
-seq = new Gibberish.Sequencer({ target:sampler, key:'note', durations: [() => durations.next().value], values: [() => notes.next().value]  }).start()
-flangerSeq = new Gibberish.Sequencer({ target: c, key:'feedback', durations: [SR*5], values: [() => c.feedback < 0.9 ? c.feedback+0.05 : 0.9]  }).start()
-flangerSeqAmount = new Gibberish.Sequencer({ target: c, key:'amount', durations: [SR*2], values: [() => c.amount < 5000 ? c.amount+100 : 5000]  }).start()
+seq = new Gibberish.Sequencer({ 
+	target: sampler,
+	key: 'note',
+	durations: [() => durations.next().value],
+	values: [() => notes.next().value]
+}).start()
+
+flangerSeq = new Gibberish.Sequencer({ 
+	target: c,
+	key:'feedback', durations: [SR*5],
+	values: [() => c.feedback < 0.9 ? c.feedback+0.05 : 0.9]
+}).start()
+
+flangerSeqAmount = new Gibberish.Sequencer({ 
+	target: c,
+	key:'amount',
+	durations: [SR*2],
+	values: [() => c.amount < 5000 ? c.amount+100 : 5000]
+}).start()
 
 
