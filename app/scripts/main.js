@@ -8,7 +8,7 @@ Gibberish.init();
 Gibberish.Binops.export();
 var G = Gibberish;
 
-//sineMod2 = new G.Saw(0.2, 500);
+sawMod = new G.Saw(0.2, 500);
 sineMod = new G.Sine(0.2, 30);
 //mod = new G.Saw(5, Mul(150, sineMod));
 
@@ -26,13 +26,16 @@ sineMod = new G.Sine(0.2, 30);
 
 //a = new Gibberish.PolyFM({ cmRatio:9, index:3, attack:88200, decay:88200 * 10, maxVoices:20 });
 stereoBus = new Gibberish.Bus2();
-a = new Gibberish.PolyFM({ cmRatio:19, index:3, attack:88200, decay:88200 * 30, maxVoices:20, pan: -1 }).connect();
-f = new Gibberish.PolyFM({ cmRatio:19, index:3, attack:88200, decay:88200 * 30, maxVoices:20, pan: 1}).connect();
+a = new Gibberish.PolyFM({ cmRatio:19, index:3, attack:88200, decay:88200 * 30, maxVoices:20, pan: -1, amp: 0.2 }).connect(stereoBus);
+f = new Gibberish.PolyFM({ cmRatio:19, index:3, attack:88200, decay:88200 * 30, maxVoices:20, pan: 1, amp: 0.2}).connect(stereoBus);
+
+a.amp = 0.05;
+f.amp = 0.05;
 
 //b = new Gibberish.Distortion({ input: stereoBus, amount:3 });
 b = new Gibberish.Distortion({ input: stereoBus, amount:40 });
 //c = new Gibberish.Flanger({input:b, rate: 12.0, amount:125, feedback:.5}).connect();
-c = new Gibberish.Flanger({input:b, rate: Add(12.0, sineMod), amount:125, feedback:.5, pan: -1}).connect();
+c = new Gibberish.Flanger({input:b, rate: Add(1.0, sineMod), amount:125, feedback:.5, pan: -1}).connect();
 reverb = new G.Reverb({input:c, damping: 0.2});
 reverb.connect();
 var note = 48;
@@ -57,7 +60,7 @@ triggerNoteStereo = function(freqs, synths) {
 c.amount = 615;
 
 sampler = new Gibberish.Sampler({ file:'/samples/cuernavaca1.wav' }).connect(stereoBus);
-sampler.amp = 4;
+sampler.amp = 0.4;
 sampler.note(0.4);
 
 notes = Pmarkov([6,0.1, 5, 3, 9, 0.2, 9, 5, 0.2, 0.1, 0.3], 2, [6, 0.1]);
@@ -86,17 +89,30 @@ flangerSeqAmount = new Gibberish.Sequencer({
 	key:'amount',
 	durations: [SR*2],
 	//values: [() => c.amount < 5000 ? c.amount+100 : 5000]
-	values: [() => c.amount < 800 ? c.amount+10 : utils.choose([ 615, 12, 12, 1 ])]
+	values: [() => c.amount < 800 ? c.amount+10 : utils.choose([ 615, 2, 2, 2, 2, 1 ])]
 }).start();
 
 
 // Pitches
-//let pitchDurs = Prand([SR * 10.001, SR * 25, SR*40, SR * 60]);
-//let pitchNotes = Pmarkov([60, 70, 60, 70, 200, 1000, 70], 2, [70, 60]);
+let pitchDurs = Prand([60.001, 25, 40, 60]);
+let pitchNotes = Pmarkov([60, 70], 2, [70, 60]);
 
 //let pitchSeq = new Gibberish.Sequencer({ 
 	//target: a,
 	//key: 'note',
 	//durations: [() => pitchDurs.next().value],
 	//values: [() => pitchNotes.next().value]
-//}).start()
+//});
+
+let playPitch = function() {
+	let note = pitchNotes.next().value;
+	triggerNoteStereo([note, note * 1.2], [a,f]);
+
+	window.setTimeout(function() {
+		playPitch();
+	}, pitchDurs.next().value * 1000);
+};
+
+window.setTimeout(function() {
+	playPitch();
+}, 20000);
