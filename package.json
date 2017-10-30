@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server/planetCounter.js",
-    "build": "./buildScripts/bootstrap.sh && npm run buildSCSS && browserify -t brfs app/scripts/main.js -o server/dist/scripts/main.js && cp -r ./app/index.html ./server/dist/index.html && cp -r ./app/img/* ./server/dist/img/ && cp -r ./app/samples/* ./server/dist/samples/",
+    "build": "./buildScripts/bootstrap.sh && npm run buildSCSS && ./node_modules/.bin/webpack --config webpack.config.js && cp -r ./app/index.html ./server/dist/index.html && cp -r ./app/img/* ./server/dist/img/ && cp -r ./app/samples/* ./server/dist/samples/",
     "copyAppToDist": "cp -r ./app/* ./server/dist/",
     "sync": "./buildScripts/sync.sh",
     "buildSCSS": "./buildScripts/buildSCSS.sh"
@@ -21,6 +21,9 @@
     "brfs": "^1.4.1",
     "browserify": "^12.0.1",
     "jquery": "2.1.4",
-    "underscore": "1.8.3"
+    "underscore": "~1.8.3"
+  },
+  "devDependencies": {
+    "webpack": "^3.8.1"
   }
 }

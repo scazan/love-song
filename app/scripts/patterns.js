@@ -2,9 +2,8 @@
  * Basic Patterns implementation for Gibberish
  */
 
-let Markov = require("./Markov")();
+import { Markov } from "./Markov";
 
-module.exports = function() {
 
 	let Patterns = {
 		Pattern: (pattern) => [() => pattern.next().value],
@@ -61,6 +60,5 @@ module.exports = function() {
 		},
 	};
 
-	return Patterns;
+export { Patterns };
 
-};

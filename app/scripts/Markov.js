@@ -1,5 +1,30 @@
-module.exports = () => {
-	var _ = require('underscore');
+
+
+let isEquivalent = (a, b) => {
+    // Create arrays of property names
+    var aProps = Object.getOwnPropertyNames(a);
+    var bProps = Object.getOwnPropertyNames(b);
+
+    // If number of properties is different,
+    // objects are not equivalent
+    if (aProps.length != bProps.length) {
+        return false;
+    }
+
+    for (var i = 0; i < aProps.length; i++) {
+        var propName = aProps[i];
+
+        // If values of same property are not equal,
+        // objects are not equivalent
+        if (a[propName] !== b[propName]) {
+            return false;
+        }
+    }
+
+    // If we made it this far, objects
+    // are considered equivalent
+    return true;
+};
 
 	let utils = {
 		normalize: (coll) => {
@@ -76,8 +101,8 @@ module.exports = () => {
 					currentState = [ input[i-(order-1)], input[i] ];
 				}
 
-				let indexOfCurrentState = _.findIndex(this.combinations, (item) => {
-					return _.isEqual(currentState, item);
+				let indexOfCurrentState = this.combinations.findIndex( (item) => {
+					return isEquivalent(currentState, item);
 				});
 
 				// We are assuming a wrapping input
@@ -99,8 +124,8 @@ module.exports = () => {
 		getNextState(state) {
 			const transitionMatrix = this.transitionMatrix;
 
-			let indexOfCurrentState = _.findIndex(this.combinations, (item) => {
-				return _.isEqual(state, item);
+			let indexOfCurrentState = this.combinations.findIndex( (item) => {
+				return isEquivalent(state, item);
 			});
 
 			let probabilities = transitionMatrix[indexOfCurrentState];
@@ -127,6 +152,5 @@ module.exports = () => {
 
 	};
 
-	return Markov;
-};
+	export { Markov };
 
