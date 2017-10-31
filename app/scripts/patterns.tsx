@@ -9,9 +9,9 @@ import { Genetic } from "./Genetic";
 let Patterns = {
 	Pattern: (pattern) => [() => pattern.next().value],
 
-	Pseq: function* Pseq(values, repetitions){
-		var index = 0;
-		var result = () => values[index++ % values.length];
+	Pseq: function* Pseq(values: Array<any>, repetitions: number){
+		var index: number = 0;
+		var result = (): any => values[index++ % values.length];
 
 		if(repetitions == undefined) {
 			while(true) {
@@ -25,9 +25,9 @@ let Patterns = {
 		}
 	},
 
-	Prand: function* Prand(values, repetitions){
+	Prand: function* Prand(values: Array<any>, repetitions: number){
 
-		var result = () => values[Math.floor(Math.random() * values.length)];
+		var result = (): any => values[Math.floor(Math.random() * values.length)];
 
 		if(repetitions == undefined) {
 			while(true) {
@@ -41,20 +41,20 @@ let Patterns = {
 		}
 	},
 
-	Pmarkov: function* Pmarkov(seed, order, initialState) {
-		let markovChain = new Markov(seed, order);
+	Pmarkov: function* Pmarkov(seed: Array<any>, order: number, initialState: Array<any>) {
+		let markovChain: Markov = new Markov(seed, order);
 
-		let lastState = initialState;
+		let lastState: any = initialState;
 
 		while(true) {
-			let nextState = markovChain.getNextState(lastState);
+			let nextState: any = markovChain.getNextState(lastState);
 
 			lastState = [lastState[lastState.length-1], nextState];
 
 			yield nextState;
 		}
 	},
-	exportToScope: (namespace) => {
+	exportToScope: (namespace): void => {
 		for (var key in Patterns) {
 			namespace[key] = Patterns[key];
 		}

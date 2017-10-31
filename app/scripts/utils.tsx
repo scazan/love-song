@@ -1,13 +1,13 @@
 
 export default {
-	choose: (array) => {
+	choose: (array: Array<any>): any => {
 		return array[Math.floor(Math.random() * array.length)];
 	},
-	normalize: (coll: Array<Any>) => {
+	normalize: (coll: Array<number>): Array<number> => {
 		let collSum = coll.reduce((a,b) => a+b);
 		return collSum > 0 ? coll.map( (weight) => weight / collSum) : coll.map(() => 0);
 	},
-	windex: (weights: Array<number>) => {
+	windex: (weights: Array<number>): number => {
 		let sumOfWeights = weights.reduce( (prev, curr) => prev + curr);
 
 		let randNum = Math.random() * sumOfWeights;

@@ -33,7 +33,7 @@ class Markov {
 		lastState: Array<number>;
 		transitionMatrix: Array<Array<number>>;
 
-	constructor(input: Array<number>, order: number) {
+	constructor(input: Array<any>, order: number) {
 		this.dictionary = [],
 		this.combinations = [];
 
@@ -105,7 +105,7 @@ class Markov {
 	}
 
 
-	getNextState(state): number {
+	getNextState(state): any {
 		const transitionMatrix: Array< Array<number> > = this.transitionMatrix;
 
 		let indexOfCurrentState: number = this.combinations.findIndex( (item) => {
