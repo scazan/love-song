@@ -2,9 +2,20 @@
 const path = require('path');
 
 module.exports = {
-	entry: './app/scripts/main.js',
+	entry: './app/scripts/main.tsx',
 	output: {
 		filename: 'main.js',
 		path: path.resolve(__dirname + '/server/dist/', 'scripts')
+	},
+	resolve: {
+		extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
+	},
+	module: {
+		loaders: [
+			{
+				test: /\.tsx?$/,
+				loader: 'awesome-typescript-loader'
+			}
+		]
 	}
 };
