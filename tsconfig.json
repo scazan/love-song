@@ -1,0 +1,11 @@
+
+{
+    "compilerOptions": {
+        "outDir": "./server/dist/scripts",
+        "target": "es6",
+		"jsx": "react"
+    },
+    "include": [
+        "./app/scripts/**/*"
+    ]
+}
