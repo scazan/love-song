@@ -3,7 +3,7 @@ export default {
 	choose: (array) => {
 		return array[Math.floor(Math.random() * array.length)];
 	},
-	normalize: (coll) => {
+	normalize: (coll: Array<Any>) => {
 		let collSum = coll.reduce((a,b) => a+b);
 		return collSum > 0 ? coll.map( (weight) => weight / collSum) : coll.map(() => 0);
 	},
