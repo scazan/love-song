@@ -7,6 +7,18 @@ p.exportToScope(window);
 import utils from "./utils";
 
 
+let notes = Pmarkov([6,0.1, 5, 3, 9, 0.2, 9, 5, 0.2, 0.1, 0.3], 2, [6, 0.1]);
+
+let printNote = () => {
+	window.setTimeout(function() {
+		console.log(notes.next().value);
+		printNote();
+	}, 1000);
+};
+
+printNote();
+
+
 //Gibberish.init();
 //Gibberish.Binops.export();
 //var G = Gibberish;
