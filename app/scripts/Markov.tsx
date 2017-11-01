@@ -105,7 +105,7 @@ class Markov {
 	}
 
 
-	getNextState(state): any {
+	getNextState(state: any): any {
 		const transitionMatrix: Array< Array<number> > = this.transitionMatrix;
 
 		let indexOfCurrentState: number = this.combinations.findIndex( (item) => {
