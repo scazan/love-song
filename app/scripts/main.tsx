@@ -4,6 +4,7 @@ import utils from "./utils";
 
 
 const mtof = (note: number): number => Math.pow(2, (note)/12) * 440;
+const ftom = (note: number): number => Math.sqrt(note/440)/12;
 //let notes = p.Pmarkov([6,0.1, 5, 3, 9, 0.2, 9, 5, 0.2, 0.1, 0.3], 2, [6, 0.1]);
 let initialPopulation = Array(80).fill( Array(8).fill(0) );
 let target = Array(8).fill(0);
@@ -19,12 +20,17 @@ const createIntegerSequence = (start: number, length: number): number[] => {
 const createRandomIntegerSequence8 = (): number[] => createIntegerSequence(Math.floor(Math.random() * 10), 8);
 
 let i=0;
-target = target.map(() => {i+1; return i;});
+target = [193, 423, 1668, 2333, 2665, 3078, 4038, 6319];  ;
+target = target.map((freq) => ftom(freq) );
+//target = target.map(() => {i+1; return i;});
 initialPopulation = initialPopulation.map( item => item.map( item2 => Math.floor(Math.random() * 9)) );
 //initialPopulation = initialPopulation.map( () => createRandomIntegerSequence8() );
 console.log(initialPopulation);
 
 let notes = p.Pgenetic(initialPopulation, target);
+
+const timeBetweenEvents = 20;
+const gapBetweenEvents = 35;
 
 let printNote = () => {
 	window.setTimeout(function() {
@@ -32,12 +38,12 @@ let printNote = () => {
 		const newNotes = nextGen.map(note => mtof(note) );
 
 		let i = 0;
-		oscillators.map((osc) => {osc.play(newNotes[i], 0); i++; });
+		oscillators.map((osc) => {osc.play(newNotes[i], timeBetweenEvents); i++; });
 
 		console.log(nextGen)
 
 		printNote();
-	}, 1000);
+	}, (timeBetweenEvents + gapBetweenEvents) * 1000);
 };
 
 var context = new AudioContext();
@@ -59,6 +65,7 @@ class Sound {
 		this.oscillator.connect(this.gainNode);
 		this.gainNode.connect(this.context.destination);
 		this.oscillator.type = 'sine';
+		this.gainNode.gain.value = 0;
 	}
 
 	play(value, time) {
@@ -66,20 +73,20 @@ class Sound {
 
 		this.oscillator.frequency.value = value;
 		//this.gainNode.gain.setValueAtTime(1, this.context.currentTime);
-		this.gainNode.gain.exponentialRampToValueAtTime(1, 0.25 );
+		this.oscillator.start(0);
+		this.gainNode.gain.setTargetAtTime(0.25 - (Math.random() * 0.1), context.currentTime, time * 0.75 );
 
-		this.oscillator.start(time);
 
 		var self = this;
 		window.setTimeout(function() {
-			self.stop(0.5);
-		}, 500);
+			self.stop(time * 0.25);
+		}, (time - (time*0.25)) * 1000);
 
 	}
 
 	stop(time) {
-		this.gainNode.gain.exponentialRampToValueAtTime(0.001, time);
-		this.oscillator.stop(time+ 0.001);
+		this.gainNode.gain.setTargetAtTime(0, context.currentTime, time*0.9 );
+		this.oscillator.stop(context.currentTime + ( time * 4 ));
 	}
 
 }
