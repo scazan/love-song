@@ -20,8 +20,8 @@ const createRandomIntegerSequence8 = (): number[] => createIntegerSequence(Math.
 
 let i=0;
 target = target.map(() => {i+1; return i;});
-//initialPopulation = initialPopulation.map( item => item.map( item2 => Math.floor(Math.random() * 9)) );
-initialPopulation = initialPopulation.map( () => createRandomIntegerSequence8() );
+initialPopulation = initialPopulation.map( item => item.map( item2 => Math.floor(Math.random() * 9)) );
+//initialPopulation = initialPopulation.map( () => createRandomIntegerSequence8() );
 console.log(initialPopulation);
 
 let notes = p.Pgenetic(initialPopulation, target);

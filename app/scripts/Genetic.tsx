@@ -58,7 +58,7 @@ class Genetic {
 		}
 		else {
 			for(let i=scores.length-1; i>=0; i--) {
-				// Ignore any scores that are the highest score
+				// Ignore any scores that are already the highest score
 				if(scores[i] !== topGenerationScore) {
 
 					if(scores[indexOfNextHighestScore] < scores[i]) {
@@ -75,7 +75,6 @@ class Genetic {
 			}
 		}
 
-		//return [[],[]];
 		return [population[indexOfHighestScore], population[indexOfNextHighestScore] ];
 	}
 
@@ -85,6 +84,7 @@ class Genetic {
 
 		const splicedOffspring = this.getSplicedOffspring(parents[0], parents[1]);
 		const interlacedOffspring = this.getInterlacedOffspring(parents[0], parents[1]);
+
 		// Generate more than one offspring
 		return [splicedOffspring, interlacedOffspring];
 	}
