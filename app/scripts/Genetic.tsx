@@ -6,20 +6,23 @@ class Genetic {
 	population: number[][];
 	goal: number[];
 	scores: number[];
+	lastState: number[];
 
 	constructor(inputPopulation: number[][], goal: number[]) {
 		this.population = inputPopulation;
 		this.scores = Array(inputPopulation.length).fill(0);
 		this.goal = goal;
+		this.lastState = inputPopulation[Math.floor( Math.random() * (inputPopulation.length-1)) ];
 	}
 
 
 	// Accumulate and return the score for a single collection
 	getTotalFitnessRating(collection: number[], goal: number[]) {
 		let score: number = 0; // lower is better
+		let normalizedCollection = collection.map((num: number) => num - Math.min.apply(null, collection) );
 
-		for(let i=collection.length-1; i >= 0; i--) {
-			score += this.getDistance(collection[i], goal[i]);
+		for(let i=normalizedCollection.length-1; i >= 0; i--) {
+			score += this.getDistance(normalizedCollection[i], goal[i]);
 		}
 
 		return score;
@@ -27,7 +30,7 @@ class Genetic {
 
 	// TODO: test
 	// Using the given scores, get the most "fit" two generations out of the population
-	getTopTwoGenerations(scores:number[], population:number[][]):number[][] {
+	getTopTwoGenerations(scores: number[], population: number[][]): number[][] {
 
 		let indexOfHighestScore = 0;
 
@@ -44,22 +47,30 @@ class Genetic {
 			}
 		}
 
-		let indexOfNextHighestScore = 0;
-		const topGenerationScore = scores[indexOfHighestScore];
+		let indexOfNextHighestScore: number = 0;
+		const topGenerationScore: number = scores[indexOfHighestScore];
 
-		for(let i=scores.length-1; i>=0; i--) {
-			// Ignore any scores that are the highest score
-			if(scores[i] !== topGenerationScore) {
 
-				if(scores[indexOfNextHighestScore] < scores[i]) {
-					indexOfNextHighestScore = i;
-				}
+		const coinFlipForMutate = Math.random() * 4;
 
-				// If there are two of the same scores, choose one randomly
-				if(scores[indexOfNextHighestScore] === scores[i]) {
-					const coinFlip = Math.random();
+		if(coinFlipForMutate <= 1) {
+			indexOfNextHighestScore = Math.floor(Math.random() * scores.length);
+		}
+		else {
+			for(let i=scores.length-1; i>=0; i--) {
+				// Ignore any scores that are the highest score
+				if(scores[i] !== topGenerationScore) {
 
-					indexOfNextHighestScore = (coinFlip > 0.5) ? indexOfNextHighestScore : i;
+					if(scores[indexOfNextHighestScore] < scores[i]) {
+						indexOfNextHighestScore = i;
+					}
+
+					// If there are two of the same scores, choose one randomly
+					if(scores[indexOfNextHighestScore] === scores[i]) {
+						const coinFlip = Math.random();
+
+						indexOfNextHighestScore = (coinFlip > 0.5) ? indexOfNextHighestScore : i;
+					}
 				}
 			}
 		}
@@ -70,20 +81,31 @@ class Genetic {
 
 	// TODO: Make more than one type of mating
 	// Take in two arrays (parents) and mate them in a number of different ways to produce multiple offspring
-	mateGenerations(parents:number[][]):number[][] {
+	mateGenerations(parents: number[][]): number[][] {
 
-		const splicedParents = this.getSplicedOffspring(parents[0], parents[1]);
+		const splicedOffspring = this.getSplicedOffspring(parents[0], parents[1]);
+		const interlacedOffspring = this.getInterlacedOffspring(parents[0], parents[1]);
 		// Generate more than one offspring
-		return [splicedParents, splicedParents];
+		return [splicedOffspring, interlacedOffspring];
 	}
 
 	// Splice two equal-length arrays together and return the result
-	getSplicedOffspring(parentOne:number[], parentTwo:number[]):number[] {
-		const coinFlip:number = Math.random() > 0.5 ? 1 : 0;
-		const parents = coinFlip == 0 ? [parentOne, parentTwo] : [parentTwo, parentOne];
-		const splitPoint:number = Math.floor(parentOne.length / 2);
+	getInterlacedOffspring(parentOne: number[], parentTwo: number[]): number[] {
+		const interlacedOffspring = Array(parentOne.length);
 
-		const splicedOffspring = [...parents[0].slice(0, splitPoint), ...parents[1].slice(splitPoint-1, parents[1].length-1) ];
+		for(let i=interlacedOffspring.length-1; i>=0; i--) {
+			interlacedOffspring[i] = (i%2) === 0 ? parentOne[i] : parentTwo[i];
+		}
+
+		return interlacedOffspring;
+	}
+
+	getSplicedOffspring(parentOne: number[], parentTwo: number[]): number[] {
+		const coinFlip: number = Math.random() > 0.5 ? 1 : 0;
+		const parents = coinFlip == 0 ? [parentOne, parentTwo] : [parentTwo, parentOne];
+		const splitPoint: number = Math.floor(parentOne.length / 2);
+
+		const splicedOffspring = [...(parents[0].slice(0, splitPoint)), ...(parents[1].slice(splitPoint-1, parents[1].length-1)) ];
 
 		return splicedOffspring;
 	}
@@ -110,38 +132,40 @@ class Genetic {
 		return scores;
 	}
 
-	getNextGeneration(score: number, population: number[][]) {
-		const populationScores:number[] = this.getPopulationScores(population, this.goal);
+	getNextGeneration(population: number[][], goal: number[]) {
+		const populationScores:number[] = this.getPopulationScores(population, goal);
 		const topTwoGenerations:number[][] = this.getTopTwoGenerations(populationScores, population);
 		const newGenerations:number[][] = this.mateGenerations(topTwoGenerations);
 
+		for(let i=0; i < (newGenerations.length-1); i++) {
+			this.population.splice(Math.floor(Math.random() * (this.population.length-1)), 1);
+		}
+		this.population = [...this.population, ...newGenerations];
 		// For now randomly select one of the best generations
 		const bestFitGeneration = newGenerations[Math.floor(Math.random() * (newGenerations.length * 0.999))];
 
-		const newGeneration = [];
-		return newGeneration;
+		return bestFitGeneration;
 	}
 
 	getNextState(state: number[]) {
+		// TODO: Use state to add into the population
 
-		//let fitnessScore: number = this.getTotalFitnessRating(this.population, this.goal);
-		
-		//let nextState: number[] = this.getNextGeneration(fitnessScore, this.population);
+		const nextState: number[] = this.getNextGeneration(this.population, this.goal);
 
-		//return nextState;
+		return nextState;
 	}
 
 	asPattern() {
-		let self = this;
+		const self = this;
 
 		return function* asPattern(initialState: number[]) {
-			/*self.lastState = initialState;*/
+			self.lastState = initialState;
 
 			while(true) {
-				/*let nextState = self.getNextState(self.lastState);*/
-				/*self.lastState = [self.lastState[self.lastState.length-1], nextState];*/
+				const nextState = self.getNextState(self.lastState);
+				self.lastState = nextState;
 
-				/*yield nextState;*/
+				yield nextState;
 			}
 		};
 	}

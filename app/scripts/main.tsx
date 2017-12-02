@@ -3,16 +3,104 @@ import { Patterns as p } from "./patterns";
 import utils from "./utils";
 
 
-let notes = p.Pmarkov([6,0.1, 5, 3, 9, 0.2, 9, 5, 0.2, 0.1, 0.3], 2, [6, 0.1]);
+const mtof = (note: number): number => Math.pow(2, (note)/12) * 440;
+//let notes = p.Pmarkov([6,0.1, 5, 3, 9, 0.2, 9, 5, 0.2, 0.1, 0.3], 2, [6, 0.1]);
+let initialPopulation = Array(80).fill( Array(8).fill(0) );
+let target = Array(8).fill(0);
+const createIntegerSequence = (start: number, length: number): number[] => {
+	let i: number = start;
+	let seqArray = Array(length).fill(0);
+
+	seqArray = seqArray.map( () => i++);
+
+	return seqArray;
+};
+
+const createRandomIntegerSequence8 = (): number[] => createIntegerSequence(Math.floor(Math.random() * 10), 8);
+
+let i=0;
+target = target.map(() => {i+1; return i;});
+//initialPopulation = initialPopulation.map( item => item.map( item2 => Math.floor(Math.random() * 9)) );
+initialPopulation = initialPopulation.map( () => createRandomIntegerSequence8() );
+console.log(initialPopulation);
+
+let notes = p.Pgenetic(initialPopulation, target);
 
 let printNote = () => {
 	window.setTimeout(function() {
-		console.log(notes.next().value);
+		const nextGen = notes.next().value;
+		const newNotes = nextGen.map(note => mtof(note) );
+
+		let i = 0;
+		oscillators.map((osc) => {osc.play(newNotes[i], 0); i++; });
+
+		console.log(nextGen)
+
 		printNote();
 	}, 1000);
 };
 
+var context = new AudioContext();
+
+
+class Sound {
+	oscillator: OscillatorNode;
+	context: AudioContext;
+	gainNode;
+
+	constructor(context) {
+		this.context = context;
+	}
+
+	init() {
+		this.oscillator = this.context.createOscillator();
+		this.gainNode = this.context.createGain();
+
+		this.oscillator.connect(this.gainNode);
+		this.gainNode.connect(this.context.destination);
+		this.oscillator.type = 'sine';
+	}
+
+	play(value, time) {
+		this.init();
+
+		this.oscillator.frequency.value = value;
+		//this.gainNode.gain.setValueAtTime(1, this.context.currentTime);
+		this.gainNode.gain.exponentialRampToValueAtTime(1, 0.25 );
+
+		this.oscillator.start(time);
+
+		var self = this;
+		window.setTimeout(function() {
+			self.stop(0.5);
+		}, 500);
+
+	}
+
+	stop(time) {
+		this.gainNode.gain.exponentialRampToValueAtTime(0.001, time);
+		this.oscillator.stop(time+ 0.001);
+	}
+
+}
+
+let oscillators: Sound[] = [
+	new Sound(context),
+	new Sound(context),
+	new Sound(context),
+	new Sound(context),
+	new Sound(context),
+	new Sound(context),
+	new Sound(context),
+	new Sound(context)
+];
+
 printNote();
+
+//declare global {
+	//OO: any;
+//}
+//OO = p;
 
 
 //Gibberish.init();

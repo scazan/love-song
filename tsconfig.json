@@ -3,6 +3,7 @@
     "compilerOptions": {
         "outDir": "./server/dist/scripts",
         "target": "es6",
+		"allowJs": true,
 		"jsx": "react"
     },
     "include": [
