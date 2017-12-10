@@ -23,7 +23,7 @@ let i=0;
 target = [193, 423, 1668, 2333, 2665, 3078, 4038, 6319];  ;
 target = target.map((freq) => ftom(freq) );
 //target = target.map(() => {i+1; return i;});
-initialPopulation = initialPopulation.map( item => item.map( item2 => Math.floor(Math.random() * 9)) );
+initialPopulation = initialPopulation.map( item => item.map( item2 => {return (Math.random() * 9000) + 60}) );
 //initialPopulation = initialPopulation.map( () => createRandomIntegerSequence8() );
 console.log(initialPopulation);
 
@@ -33,15 +33,18 @@ const timeBetweenEvents = 20;
 const gapBetweenEvents = 35;
 
 let printNote = () => {
-	window.setTimeout(function() {
 		const nextGen = notes.next().value;
-		const newNotes = nextGen.map(note => mtof(note) );
+		const newNotes = nextGen.map(note => mtof( Math.ceil(ftom(note)) ) );
 
 		let i = 0;
-		oscillators.map((osc) => {osc.play(newNotes[i], timeBetweenEvents); i++; });
+		oscillators.map((osc) => {
+			const octave = Math.ceil(Math.random() * 2);
+			osc.play(newNotes[i]/octave, timeBetweenEvents); i++;
+		});
 
 		console.log(nextGen)
 
+	window.setTimeout(function() {
 		printNote();
 	}, (timeBetweenEvents + gapBetweenEvents) * 1000);
 };
@@ -74,7 +77,7 @@ class Sound {
 		this.oscillator.frequency.value = value;
 		//this.gainNode.gain.setValueAtTime(1, this.context.currentTime);
 		this.oscillator.start(0);
-		this.gainNode.gain.setTargetAtTime(0.25 - (Math.random() * 0.1), context.currentTime, time * 0.75 );
+		this.gainNode.gain.setTargetAtTime(0.25 - (Math.random() * 0.05), context.currentTime, time * 0.85 );
 
 
 		var self = this;
