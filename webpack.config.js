@@ -2,6 +2,7 @@
 const path = require('path');
 
 module.exports = {
+	watch: true,
 	entry: './app/scripts/main.tsx',
 	output: {
 		filename: 'main.js',

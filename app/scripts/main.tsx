@@ -1,5 +1,6 @@
 
 import { Patterns as p } from "./patterns";
+import Sound from "./Sound";
 import utils from "./utils";
 
 
@@ -21,25 +22,27 @@ const createRandomIntegerSequence8 = (): number[] => createIntegerSequence(Math.
 
 let i=0;
 target = [193, 423, 1668, 2333, 2665, 3078, 4038, 6319];  ;
-target = target.map((freq) => ftom(freq) );
+//target = target.map((freq) => ftom(freq) );
 //target = target.map(() => {i+1; return i;});
-initialPopulation = initialPopulation.map( item => item.map( item2 => {return (Math.random() * 9000) + 60}) );
+initialPopulation = initialPopulation.map( item => item.map( item2 => {return (Math.random() * (target[target.length-1] - target[0])) + (target[0]-20)}) );
 //initialPopulation = initialPopulation.map( () => createRandomIntegerSequence8() );
 console.log(initialPopulation);
 
 let notes = p.Pgenetic(initialPopulation, target);
 
 const timeBetweenEvents = 20;
-const gapBetweenEvents = 35;
+const gapBetweenEvents = 25;
 
 let printNote = () => {
 		const nextGen = notes.next().value;
-		const newNotes = nextGen.map(note => mtof( Math.ceil(ftom(note)) ) );
+		//const newNotes = nextGen.map(note => mtof( Math.ceil(ftom(note)) ) );
+		const newNotes = nextGen;
 
-		let i = 0;
+	let i = 0;
+	let k = (Math.random() > 0.5) ? 0 : 1;
 		oscillators.map((osc) => {
-			const octave = Math.ceil(Math.random() * 2);
-			osc.play(newNotes[i]/octave, timeBetweenEvents); i++;
+			const octave = Math.ceil(Math.random() * 8);
+			osc.play(newNotes[i]/octave, timeBetweenEvents, ((k%2)*2) - 1); i++; k++;
 		});
 
 		console.log(nextGen)
@@ -49,50 +52,23 @@ let printNote = () => {
 	}, (timeBetweenEvents + gapBetweenEvents) * 1000);
 };
 
-var context = new AudioContext();
+let playMelody = () => {
+		const nextGen = notes.next().value;
+		const newNotes = nextGen;
 
+		let i = 0;
+		oscillators.map((osc) => {
+			const octave = Math.ceil(Math.random() * 8);
+			osc.play(newNotes[i]/octave, timeBetweenEvents, ((i%3)*2) - 1); i++;
+		});
 
-class Sound {
-	oscillator: OscillatorNode;
-	context: AudioContext;
-	gainNode;
+		console.log(nextGen)
 
-	constructor(context) {
-		this.context = context;
-	}
+	window.setTimeout(function() {
+		printNote();
+	}, (timeBetweenEvents + gapBetweenEvents) * 1000);
+};
 
-	init() {
-		this.oscillator = this.context.createOscillator();
-		this.gainNode = this.context.createGain();
-
-		this.oscillator.connect(this.gainNode);
-		this.gainNode.connect(this.context.destination);
-		this.oscillator.type = 'sine';
-		this.gainNode.gain.value = 0;
-	}
-
-	play(value, time) {
-		this.init();
-
-		this.oscillator.frequency.value = value;
-		//this.gainNode.gain.setValueAtTime(1, this.context.currentTime);
-		this.oscillator.start(0);
-		this.gainNode.gain.setTargetAtTime(0.25 - (Math.random() * 0.05), context.currentTime, time * 0.85 );
-
-
-		var self = this;
-		window.setTimeout(function() {
-			self.stop(time * 0.25);
-		}, (time - (time*0.25)) * 1000);
-
-	}
-
-	stop(time) {
-		this.gainNode.gain.setTargetAtTime(0, context.currentTime, time*0.9 );
-		this.oscillator.stop(context.currentTime + ( time * 4 ));
-	}
-
-}
 
 let oscillators: Sound[] = [
 	new Sound(context),
