@@ -1,5 +1,7 @@
 
 export default {
+  mtof: (note: number): number => Math.pow(2, (note)/12) * 440,
+  ftom: (note: number): number => Math.sqrt(note/440)/12,
 	choose: (array: Array<any>): any => {
 		return array[Math.floor(Math.random() * array.length)];
 	},

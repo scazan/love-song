@@ -1,6 +1,4 @@
 
-const context = new AudioContext();
-
 
 class Sound {
 	oscillator: OscillatorNode;
@@ -33,9 +31,8 @@ class Sound {
 		if(freq > 200) gain = gain*0.12;
 		//this.gainNode.gain.setValueAtTime(1, this.context.currentTime);
 		this.panner.pan.value = pan;
-		console.log('pan', pan);
 		this.oscillator.start(0);
-		this.gainNode.gain.setTargetAtTime(gain * (0.55 - (Math.random() * 0.01)), context.currentTime, time * 0.85 );
+		this.gainNode.gain.setTargetAtTime(gain * (0.55 - (Math.random() * 0.01)), this.context.currentTime, time * 0.85 );
 
 
 		var self = this;
@@ -46,8 +43,8 @@ class Sound {
 	}
 
 	stop(time) {
-		this.gainNode.gain.setTargetAtTime(0, context.currentTime, time*0.9 );
-		this.oscillator.stop(context.currentTime + ( time * 4 ));
+		this.gainNode.gain.setTargetAtTime(0, this.context.currentTime, time*0.9 );
+		this.oscillator.stop(this.context.currentTime + ( time * 4 ));
 	}
 
 }
