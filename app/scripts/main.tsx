@@ -64,25 +64,25 @@ const playMelody = notes => {
 		const nextGen = notes.next().value;
 		const newNotes = nextGen;
 
-  // How do you map a melody of (basically) random pitches into a melody
-  // given by, let's say, a song. There needs to be some distance test or normalization method
   // Should be taken from the sequence of pitches in the recording
   const idealMelody = mapToDomain([1,2,3,4,5,4,3,2,1], newNotes);
-  const markovMelody = p.Pmarkov(idealMelody, 2, newNotes);
+  const markovMelody = p.Pmarkov(idealMelody, 1, idealMelody.slice(-2) );
 
   let i = 0;
   const playNextNote = () => {
     const octave = Math.ceil(Math.random() * 8);
     const nextNote = markovMelody.next().value;
-    oscillators[i].play(nextNote/octave, 1, 0);
+    oscillators[i%oscillators.length].play(nextNote/octave, 1, 0);
     i++;
 
     console.log('nextNote', nextNote);
+
+    window.setTimeout(function() {
+      playNextNote();
+    }, 1 * 1000);
   }
 
-	window.setTimeout(function() {
-		playNextNote();
-	}, 1 * 1000);
+  playNextNote();
 
 };
 
