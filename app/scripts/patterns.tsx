@@ -49,7 +49,7 @@ let Patterns = {
 		while(true) {
 			let nextState: any = markovChain.getNextState(lastState);
 
-			lastState = [lastState[lastState.length-1], nextState];
+      lastState = [...lastState.slice(1), nextState];
 
 			yield nextState;
 		}

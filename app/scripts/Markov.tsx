@@ -52,7 +52,7 @@ class Markov {
 			return input.indexOf(elem) == pos;
 		});
 
-		// Computer all possible combinations of the dictionary
+		// Compute all possible combinations of the dictionary
 		this.combinations = [];
 		for(let i=0; i < this.dictionary.length; i++) {
 			for(let k=0; k < this.dictionary.length; k++) {
@@ -62,7 +62,7 @@ class Markov {
 
 
 		// Setup the transitionMatrix (should be based on order)
-		//TODO: This is hardcoded to 2nd order. Make dynamic.
+		//TODO: This is hardcoded to 1st order. Make dynamic.
 		let transitionMatrix = [];
 		for(let i=0; i < this.combinations.length; i++) {
 			let dictionaryLengthArray = [];
