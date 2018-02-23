@@ -28,6 +28,7 @@ class Sound {
 
 		let gain = 1;
 		this.oscillator.frequency.value = freq;
+    // some stupid basic pyschoacoustic shaping
 		if(freq > 200) gain = gain*0.12;
 		//this.gainNode.gain.setValueAtTime(1, this.context.currentTime);
 		this.panner.pan.value = pan;

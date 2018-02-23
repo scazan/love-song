@@ -24,5 +24,13 @@ export default {
 			}
 		}
 	},
+  getClosestMember: (subject, set) => {
+    return set.reduce( (accum, member) => {
+      const prevDistance = accum - subject;
+      const currentDistance = member - subject;
+
+      return Math.abs( currentDistance ) < Math.abs( prevDistance ) ? member : accum;
+    }, set[0]);
+  }
 
 };

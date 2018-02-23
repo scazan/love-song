@@ -26,13 +26,12 @@ target = [193, 423, 1668, 2333, 2665, 3078, 4038, 6319];  ;
 //target = target.map((freq) => utils.ftom(freq) );
 //target = target.map(() => {i+1; return i;});
 initialPopulation = initialPopulation.map( item => item.map( item2 => {return (Math.random() * (target[target.length-1] - target[0])) + (target[0]-20)}) );
+const timeBetweenEvents = 20;
+const gapBetweenEvents = 25;
 //initialPopulation = initialPopulation.map( () => createRandomIntegerSequence8() );
 console.log(initialPopulation);
 
 let notes = p.Pgenetic(initialPopulation, target);
-
-const timeBetweenEvents = 20;
-const gapBetweenEvents = 25;
 
 let printNote = () => {
 		const nextGen = notes.next().value;
@@ -53,20 +52,32 @@ let printNote = () => {
 	}, (timeBetweenEvents + gapBetweenEvents) * 1000);
 };
 
-let playMelody = () => {
+const mapToDomain = (set, domain) => {
+  const setOffset = Math.min(...domain) - Math.min(...set);
+  const domainRange = ( Math.max(...domain) - Math.min(...domain) );
+  const setRange = ( Math.max(...set) - Math.min(...set) );
+
+  return set.map( member => utils.getClosestMember( (( (member - Math.min(...set)) / setRange) * domainRange ) + setOffset, domain));
+};
+
+const playMelody = notes => {
 		const nextGen = notes.next().value;
 		const newNotes = nextGen;
 
   // How do you map a melody of (basically) random pitches into a melody
-  // given by, let's say, a song. There needs to be some distance test
-  const idealMelody = newNotes; // Should be taken from the sequence of pitches in the recording
+  // given by, let's say, a song. There needs to be some distance test or normalization method
+  // Should be taken from the sequence of pitches in the recording
+  const idealMelody = mapToDomain([1,2,3,4,5,4,3,2,1], newNotes);
   const markovMelody = p.Pmarkov(idealMelody, 2, newNotes);
 
   let i = 0;
   const playNextNote = () => {
     const octave = Math.ceil(Math.random() * 8);
-    oscillators[i].play(markovMelody.next().value/octave, 1, 0);
+    const nextNote = markovMelody.next().value;
+    oscillators[i].play(nextNote/octave, 1, 0);
     i++;
+
+    console.log('nextNote', nextNote);
   }
 
 	window.setTimeout(function() {
@@ -77,7 +88,7 @@ let playMelody = () => {
 
 
 const context = new AudioContext();
-let oscillators: Sound[] = [
+const oscillators: Sound[] = [
 	new Sound(context),
 	new Sound(context),
 	new Sound(context),
@@ -88,5 +99,5 @@ let oscillators: Sound[] = [
 	new Sound(context)
 ];
 
-printNote();
-
+//printNote();
+playMelody(notes)
