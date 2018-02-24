@@ -33,6 +33,7 @@ console.log(initialPopulation);
 
 let notes = p.Pgenetic(initialPopulation, target);
 
+let currentGeneration = 0;
 let printNote = () => {
 		const nextGen = notes.next().value;
 		//const newNotes = nextGen.map(note => utils.mtof( Math.ceil(utils.ftom(note)) ) );
@@ -40,14 +41,17 @@ let printNote = () => {
 
 	let i = 0;
 	let k = (Math.random() > 0.5) ? 0 : 1;
-		oscillators.map((osc) => {
+		chordOscillators.map((osc) => {
 			const octave = Math.ceil(Math.random() * 8);
 			osc.play(newNotes[i]/octave, timeBetweenEvents, ((k%2)*2) - 1); i++; k++;
 		});
 
 		console.log(nextGen)
+  playMelody(newNotes, currentGeneration);
 
+  console.log('GENETIC GENERATION: ', currentGeneration);
 	window.setTimeout(function() {
+    currentGeneration++;
 		printNote();
 	}, (timeBetweenEvents + gapBetweenEvents) * 1000);
 };
@@ -60,44 +64,40 @@ const mapToDomain = (set, domain) => {
   return set.map( member => utils.getClosestMember( (( (member - Math.min(...set)) / setRange) * domainRange ) + setOffset, domain));
 };
 
-const playMelody = notes => {
-		const nextGen = notes.next().value;
-		const newNotes = nextGen;
+const playMelody = ( notes, generation ) => {
+		//const nextGen = notes.next().value;
+		const newNotes = notes;
 
   // Should be taken from the sequence of pitches in the recording
   const idealMelody = mapToDomain([1,2,3,4,5,4,3,2,1], newNotes);
-  const markovMelody = p.Pmarkov(idealMelody, 1, idealMelody.slice(-2) );
+  const randomShiftAmount = Math.floor(Math.random() * (newNotes.length))
+  const initialState = [...newNotes.slice(randomShiftAmount), ...newNotes.slice(0, -(newNotes.length-randomShiftAmount))]
+  const markovMelody = p.Pmarkov(idealMelody, 1, initialState.slice(-2) );
 
   let i = 0;
-  const playNextNote = () => {
+  const playNextNote = (generation) => {
     const octave = Math.ceil(Math.random() * 8);
     const nextNote = markovMelody.next().value;
-    oscillators[i%oscillators.length].play(nextNote/octave, 1, 0);
+    melodyOscillators[i % melodyOscillators.length].play(nextNote/octave, 1, 0);
     i++;
 
-    console.log('nextNote', nextNote);
+    console.log('nextNote', nextNote, generation);
 
     window.setTimeout(function() {
-      playNextNote();
+      if(generation === currentGeneration) {
+        playNextNote(generation);
+      }
     }, 1 * 1000);
   }
 
-  playNextNote();
+  playNextNote(generation);
 
 };
 
 
 const context = new AudioContext();
-const oscillators: Sound[] = [
-	new Sound(context),
-	new Sound(context),
-	new Sound(context),
-	new Sound(context),
-	new Sound(context),
-	new Sound(context),
-	new Sound(context),
-	new Sound(context)
-];
+const chordOscillators = Array(8).fill(0).map(() => new Sound(context));
+const melodyOscillators = Array(8).fill(0).map(() => new Sound(context));
 
-//printNote();
-playMelody(notes)
+printNote();
+//playMelody(notes)
