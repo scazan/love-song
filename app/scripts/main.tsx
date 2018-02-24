@@ -68,7 +68,7 @@ const playMelody = ( notes, generation ) => {
     const newNotes = notes;
 
   // Should be taken from the sequence of pitches in the recording
-  const idealMelody = mapToDomain([1,2,3,4,5,4,3,2,1], newNotes);
+  const idealMelody = mapToDomain([1,2,3,4,5,4,3,2], newNotes);
   const randomShiftAmount = Math.floor(Math.random() * (newNotes.length))
   const initialState = [...newNotes.slice(randomShiftAmount), ...newNotes.slice(0, -(newNotes.length-randomShiftAmount))]
   const markovMelody = p.Pmarkov(idealMelody, 1, initialState.slice(-2) );
