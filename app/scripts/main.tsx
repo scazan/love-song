@@ -43,13 +43,12 @@ let printNote = () => {
   let k = (Math.random() > 0.5) ? 0 : 1;
     chordOscillators.map((osc) => {
       const octave = Math.ceil(Math.random() * 8);
-      osc.play(newNotes[i]/octave, timeBetweenEvents, ((k%2)*2) - 1); i++; k++;
+      osc.play({freq: newNotes[i]/octave, time: timeBetweenEvents, pan: ((k%2)*2) - 1, vol: 0.2}); i++; k++;
     });
 
-    console.log(nextGen)
   playMelody(newNotes, currentGeneration);
 
-  console.log('GENETIC GENERATION: ', currentGeneration);
+  console.log('GENETIC GENERATION: ', currentGeneration, nextGen);
   window.setTimeout(function() {
     currentGeneration++;
     printNote();
@@ -78,7 +77,7 @@ const playMelody = ( notes, generation ) => {
   const playNextNote = (generation) => {
     const octave = Math.ceil(Math.random() * 8);
     const nextNote = markovMelody.next().value;
-    melodyOscillators[i % melodyOscillators.length].play(nextNote/octave, 1, 0);
+    melodyOscillators[i % melodyOscillators.length].play({freq: nextNote/octave, time: 1, pan: 0});
     i++;
 
     console.log('nextNote', nextNote, generation);
@@ -87,7 +86,7 @@ const playMelody = ( notes, generation ) => {
       if(generation === currentGeneration) {
         playNextNote(generation);
       }
-    }, 1 * 1000);
+    }, ((Math.random() * 2) + 0.5) * 1000);
   }
 
   playNextNote(generation);
