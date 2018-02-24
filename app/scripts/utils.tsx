@@ -2,28 +2,28 @@
 export default {
   mtof: (note: number): number => Math.pow(2, (note)/12) * 440,
   ftom: (note: number): number => Math.sqrt(note/440)/12,
-	choose: (array: Array<any>): any => {
-		return array[Math.floor(Math.random() * array.length)];
-	},
-	normalize: (coll: Array<number>): Array<number> => {
-		let collSum = coll.reduce((a,b) => a+b);
-		return collSum > 0 ? coll.map( (weight) => weight / collSum) : coll.map(() => 0);
-	},
-	windex: (weights: Array<number>): number => {
-		let sumOfWeights = weights.reduce( (prev, curr) => prev + curr);
+  choose: (array: Array<any>): any => {
+    return array[Math.floor(Math.random() * array.length)];
+  },
+  normalize: (coll: Array<number>): Array<number> => {
+    let collSum = coll.reduce((a,b) => a+b);
+    return collSum > 0 ? coll.map( (weight) => weight / collSum) : coll.map(() => 0);
+  },
+  windex: (weights: Array<number>): number => {
+    let sumOfWeights = weights.reduce( (prev, curr) => prev + curr);
 
-		let randNum = Math.random() * sumOfWeights;
-		let weightSum = 0;
+    let randNum = Math.random() * sumOfWeights;
+    let weightSum = 0;
 
-		for (let i = 0; i < weights.length; i++) {
-			weightSum += weights[i];
-			weightSum = +weightSum.toFixed(2);
+    for (let i = 0; i < weights.length; i++) {
+      weightSum += weights[i];
+      weightSum = +weightSum.toFixed(2);
 
-			if (randNum <= weightSum) {
-				return i;
-			}
-		}
-	},
+      if (randNum <= weightSum) {
+        return i;
+      }
+    }
+  },
   getClosestMember: (subject, set) => {
     return set.reduce( (accum, member) => {
       const prevDistance = accum - subject;

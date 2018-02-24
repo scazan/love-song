@@ -5,12 +5,12 @@ import utils from "./utils";
 
 // HELPERS
 const createIntegerSequence = (start: number, length: number): number[] => {
-	let i: number = start;
-	let seqArray = Array(length).fill(0);
+  let i: number = start;
+  let seqArray = Array(length).fill(0);
 
-	seqArray = seqArray.map( () => i++);
+  seqArray = seqArray.map( () => i++);
 
-	return seqArray;
+  return seqArray;
 };
 
 const createRandomIntegerSequence8 = (): number[] => createIntegerSequence(Math.floor(Math.random() * 10), 8);
@@ -35,25 +35,25 @@ let notes = p.Pgenetic(initialPopulation, target);
 
 let currentGeneration = 0;
 let printNote = () => {
-		const nextGen = notes.next().value;
-		//const newNotes = nextGen.map(note => utils.mtof( Math.ceil(utils.ftom(note)) ) );
-		const newNotes = nextGen;
+    const nextGen = notes.next().value;
+    //const newNotes = nextGen.map(note => utils.mtof( Math.ceil(utils.ftom(note)) ) );
+    const newNotes = nextGen;
 
-	let i = 0;
-	let k = (Math.random() > 0.5) ? 0 : 1;
-		chordOscillators.map((osc) => {
-			const octave = Math.ceil(Math.random() * 8);
-			osc.play(newNotes[i]/octave, timeBetweenEvents, ((k%2)*2) - 1); i++; k++;
-		});
+  let i = 0;
+  let k = (Math.random() > 0.5) ? 0 : 1;
+    chordOscillators.map((osc) => {
+      const octave = Math.ceil(Math.random() * 8);
+      osc.play(newNotes[i]/octave, timeBetweenEvents, ((k%2)*2) - 1); i++; k++;
+    });
 
-		console.log(nextGen)
+    console.log(nextGen)
   playMelody(newNotes, currentGeneration);
 
   console.log('GENETIC GENERATION: ', currentGeneration);
-	window.setTimeout(function() {
+  window.setTimeout(function() {
     currentGeneration++;
-		printNote();
-	}, (timeBetweenEvents + gapBetweenEvents) * 1000);
+    printNote();
+  }, (timeBetweenEvents + gapBetweenEvents) * 1000);
 };
 
 const mapToDomain = (set, domain) => {
@@ -65,8 +65,8 @@ const mapToDomain = (set, domain) => {
 };
 
 const playMelody = ( notes, generation ) => {
-		//const nextGen = notes.next().value;
-		const newNotes = notes;
+    //const nextGen = notes.next().value;
+    const newNotes = notes;
 
   // Should be taken from the sequence of pitches in the recording
   const idealMelody = mapToDomain([1,2,3,4,5,4,3,2,1], newNotes);
