@@ -1,6 +1,6 @@
+import {ISoundPlayer, IPlayOptions} from './SoundPlayer';
 
-
-class Sound {
+class Synth implements ISoundPlayer {
   oscillator: OscillatorNode;
   context: AudioContext;
   gainNode;
@@ -10,7 +10,7 @@ class Sound {
     this.context = context;
   }
 
-  init() {
+  private init() {
     this.oscillator = this.context.createOscillator();
     this.gainNode = this.context.createGain();
     this.panner = this.context.createStereoPanner();
@@ -23,7 +23,7 @@ class Sound {
     this.gainNode.gain.value = 0;
   }
 
-  play(opt) {
+  public play(opt: IPlayOptions) {
     const {freq=220, time=1, pan=0, vol=1} = opt;
     this.init();
 
@@ -42,13 +42,16 @@ class Sound {
       self.stop(time * 0.25);
     }, (time - (time*0.25)) * 1000);
 
+    return this;
   }
 
-  stop(time) {
+  public stop(time) {
     this.gainNode.gain.setTargetAtTime(0, this.context.currentTime, time*0.9 );
     this.oscillator.stop(this.context.currentTime + ( time * 4 ));
+
+    return this;
   }
 
 }
 
-export default Sound;
+export default Synth;

@@ -8,7 +8,8 @@
     "build": "./buildScripts/bootstrap.sh && npm run buildSCSS && webpack && cp -r ./app/index.html ./server/dist/index.html && cp -r ./app/img/* ./server/dist/img/ && cp -r ./app/samples/* ./server/dist/samples/",
     "copyAppToDist": "cp -r ./app/* ./server/dist/",
     "sync": "./buildScripts/sync.sh",
-    "buildSCSS": "./buildScripts/buildSCSS.sh"
+    "buildSCSS": "./buildScripts/buildSCSS.sh",
+    "dev": "npm start & webpack"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,7 @@
   "license": "ISC",
   "homepage": "https://github.com/scazan/planetCounter#readme",
   "dependencies": {
+    "@types/howler": "^2.0.5",
     "brfs": "^1.4.1",
     "browserify": "^12.0.1",
     "jquery": "2.1.4",

@@ -1,7 +1,8 @@
 
-import { Patterns as p } from "./patterns";
-import Sound from "./Sound";
-import utils from "./utils";
+import { Patterns as p } from './patterns';
+import Synth from './Synth';
+import MultiSampler from './MultiSampler';
+import utils from './utils';
 
 // HELPERS
 const createIntegerSequence = (start: number, length: number): number[] => {
@@ -75,9 +76,9 @@ const playMelody = ( notes, generation ) => {
 
   let i = 0;
   const playNextNote = (generation) => {
-    const octave = Math.ceil(Math.random() * 8);
+    const octave = Math.ceil(Math.random() * 3) + Math.ceil(Math.random() * 2 ) + 3;
     const nextNote = markovMelody.next().value;
-    melodyOscillators[i % melodyOscillators.length].play({freq: nextNote/octave, time: 1, pan: 0});
+    melodyOscillators[i % melodyOscillators.length].play({freq: nextNote/octave, time: 3 + (Math.random() * 14), pan: 0, vol: 0.05});
     i++;
 
     console.log('nextNote', nextNote, generation);
@@ -95,8 +96,16 @@ const playMelody = ( notes, generation ) => {
 
 
 const context = new AudioContext();
-const chordOscillators = Array(8).fill(0).map(() => new Sound(context));
-const melodyOscillators = Array(8).fill(0).map(() => new Sound(context));
+const chordOscillators = Array(8).fill(0).map(() => new Synth(context));
+
+const melodyOscillators = Array(8).fill(0).map(() => new MultiSampler(context, {
+  samples: [
+    { files: [ "samples/pipeG.mp3" ], freq: 199 },
+    { files: [ "samples/pipeD.mp3" ], freq: 306 },
+    { files: [ "samples/pipeA.mp3" ], freq: 445 },
+    { files: [ "samples/pipeE.mp3" ], freq: 666 },
+  ],
+}));
 
 printNote();
 //playMelody(notes)

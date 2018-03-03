@@ -29,6 +29,10 @@ export default {
     }
   },
 
+  getRateFromFrequencies: (freq, baseFreq): number => {
+    return freq/baseFreq;
+  },
+
   getClosestMember: (subject, set) => {
     return set.reduce( (accum, member) => {
       const prevDistance = accum - subject;
@@ -36,6 +40,10 @@ export default {
 
       return Math.abs( currentDistance ) < Math.abs( prevDistance ) ? member : accum;
     }, set[0]);
-  }
+  },
+
+  findInCollection: (collection, predicateFunction) => {
+    return collection.reduce( (accum, member) => predicateFunction(member) ? member : accum );
+  },
 
 };
