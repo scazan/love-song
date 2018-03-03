@@ -31,6 +31,7 @@ class MultiSampler implements ISoundPlayer {
     if(freq > 200) gain = gain*0.12;
     //this.gainNode.gain.setValueAtTime(1, this.context.currentTime);
     samplePlayer.player.fade( 0, gain * vol, 200, currentlyPlayingSampleID );
+    samplePlayer.player.stereo( pan, currentlyPlayingSampleID );
     //this.panner.pan.value = pan;
     //this.gainNode.gain.setTargetAtTime(vol * gain * (0.55 - (Math.random() * 0.01)), this.context.currentTime, time * 0.85 );
 
