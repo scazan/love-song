@@ -1,5 +1,5 @@
 
-export default {
+const utils = {
   mtof: (note: number): number => Math.pow(2, (note)/12) * 440,
 
   ftom: (note: number): number => Math.sqrt(note/440)/12,
@@ -51,8 +51,10 @@ export default {
     const domainRange = ( Math.max(...domain) - Math.min(...domain) );
     const setRange = ( Math.max(...set) - Math.min(...set) );
 
-    return set.map( member => this.getClosestMember( (( (member - Math.min(...set)) / setRange) * domainRange ) + setOffset, domain));
+    return set.map( member => utils.getClosestMember( (( (member - Math.min(...set)) / setRange) * domainRange ) + setOffset, domain));
   },
 
   flipCoin: (probability=0.5) => (Math.random() > probability) ? 0 : 1,
 };
+
+export default utils;
