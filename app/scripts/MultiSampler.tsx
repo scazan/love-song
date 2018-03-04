@@ -28,7 +28,7 @@ class MultiSampler implements ISoundPlayer {
     samplePlayer.player.loop( true, currentlyPlayingSampleID );
     samplePlayer.player.rate( utils.getRateFromFrequencies( freq, samplePlayer.baseFreq ), currentlyPlayingSampleID );
     // some stupid basic pyschoacoustic shaping
-    if(freq > 200) gain = gain*0.12;
+    if(freq > 200) gain = gain*0.2;
     //this.gainNode.gain.setValueAtTime(1, this.context.currentTime);
     samplePlayer.player.fade( 0, gain * vol, 200, currentlyPlayingSampleID );
     samplePlayer.player.stereo( pan, currentlyPlayingSampleID );

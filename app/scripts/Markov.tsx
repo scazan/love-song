@@ -47,12 +47,8 @@ class Markov {
   }
 
   createTransitionMatrix(input, order): Array< Array<number> > {
-
     // Gets only unique elements
     this.dictionary = input;
-    //.filter(function(elem, pos) {
-      //return input.indexOf(elem) == pos;
-    //});
 
     // Compute all possible combinations of the dictionary
     this.combinations = [];
@@ -61,9 +57,6 @@ class Markov {
         this.combinations.push([this.dictionary[i], this.dictionary[k]]);
       }
     }
-
-    console.log('combo length', input, this.dictionary.length, this.combinations);
-
 
     // Setup the transitionMatrix (should be based on order)
     //TODO: This is hardcoded to 1st order. Make dynamic.
