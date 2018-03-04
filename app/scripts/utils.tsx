@@ -46,5 +46,13 @@ export default {
     return collection.reduce( (accum, member) => predicateFunction(member) ? member : accum );
   },
 
+  mapToDomain: (set, domain) => {
+    const setOffset = Math.min(...domain) - Math.min(...set);
+    const domainRange = ( Math.max(...domain) - Math.min(...domain) );
+    const setRange = ( Math.max(...set) - Math.min(...set) );
+
+    return set.map( member => this.getClosestMember( (( (member - Math.min(...set)) / setRange) * domainRange ) + setOffset, domain));
+  },
+
   flipCoin: (probability=0.5) => (Math.random() > probability) ? 0 : 1,
 };
