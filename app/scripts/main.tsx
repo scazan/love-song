@@ -80,8 +80,10 @@ const playMelody = ( notes, generation ) => {
   const playNextNote = (generation) => {
     const octave = Math.ceil(Math.random() * 3) + Math.ceil(Math.random() * 3 ) + 3;
     const nextNote = markovMelody.next().value;
-    console.log('nextNote', nextNote, generation);
-    melodyOscillators[i % melodyOscillators.length].play({freq: nextNote/octave, time: 3 + (Math.random() * 14), pan: 0, vol: 0.05});
+
+    if(nextNote !== undefined && utils.flipCoin(0.75) ) { // Sometimes probablities are zero, so we'll get an undefined next state
+      melodyOscillators[i % melodyOscillators.length].play({freq: nextNote/octave, time: 3 + (Math.random() * 14), pan: 0, vol: 0.05});
+    }
     i++;
 
 

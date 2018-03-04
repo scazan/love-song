@@ -112,7 +112,6 @@ class Markov {
     let probabilities: Array<number> = transitionMatrix[indexOfCurrentState];
 
     let nextIndex: number = utils.windex( probabilities );
-
     return this.dictionary[nextIndex];
   }
 

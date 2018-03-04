@@ -46,4 +46,5 @@ export default {
     return collection.reduce( (accum, member) => predicateFunction(member) ? member : accum );
   },
 
+  flipCoin: (probability=0.5) => (Math.random() > probability) ? 0 : 1,
 };
