@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = {
 	watch: true,
-	entry: './app/scripts/main.tsx',
+	entry: './app/scripts/main.ts',
 	output: {
 		filename: 'main.js',
 		path: path.resolve(__dirname + '/server/dist/', 'scripts')
@@ -14,7 +14,7 @@ module.exports = {
 	module: {
 		loaders: [
 			{
-				test: /\.tsx?$/,
+				test: /\.ts?$/,
 				loader: 'awesome-typescript-loader'
 			}
 		]

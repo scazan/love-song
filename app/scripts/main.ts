@@ -6,8 +6,6 @@ import MultiSampler from './MultiSampler';
 import utils from './utils';
 
 import * as backgroundSamples from './spectralData.json';
-const sample = backgroundSamples.value.samples;
-console.log(sample);
 
 // Setup
 const populationSize = 16;
