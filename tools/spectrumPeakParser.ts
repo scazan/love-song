@@ -16,7 +16,7 @@ const getMostProminentFrequencies = data => data
 
 const spectrumDataPath = './tools/spectrumData';
 
-const audioObjects = fs.readdirSync(spectrumDataPath).map(file => {
+const audioObjects:ISpectrumConfig[] = fs.readdirSync(spectrumDataPath).map(file => {
   const data = fs.readFileSync(spectrumDataPath + '/' + file, 'utf8');
   const spectrum = getMostProminentFrequencies(data);
   const audioFile = file.replace('.txt', '.mp3');
@@ -27,6 +27,6 @@ const audioObjects = fs.readdirSync(spectrumDataPath).map(file => {
   };
 });
 
-fs.writeFileSync('./app/scripts/spectralData.json', JSON.stringify({samples: audioObjects}));
+fs.writeFileSync('./app/scripts/spectralData.json', JSON.stringify(audioObjects));
 
 console.log('Spectral data written');
