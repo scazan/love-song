@@ -5,6 +5,10 @@ import Synth from './Synth';
 import MultiSampler from './MultiSampler';
 import utils from './utils';
 
+import * as backgroundSamples from './spectralData.json';
+const sample = backgroundSamples.value.samples;
+console.log(sample);
+
 // Setup
 const populationSize = 16;
 const context = new AudioContext();
@@ -35,6 +39,7 @@ const sceneConfig: ISceneConfig = {
 
 // Play the background sound
 const sourceSamples = Array(1).fill(0).map(() => new MultiSampler(context, {
+//const sourceSamples = backgroundSamples.samples.map( sampleData => new MultiSampler(context, {
   samples: [
     { files: [ "samples/emptyWords.mp3" ], freq: 1 },
   ],
