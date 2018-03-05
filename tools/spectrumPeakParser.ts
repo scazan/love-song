@@ -27,8 +27,6 @@ const audioObjects = fs.readdirSync(spectrumDataPath).map(file => {
   };
 });
 
-console.log(audioObjects)
-
 fs.writeFileSync('./app/scripts/spectrumData.json', JSON.stringify(audioObjects));
 
-console.log('Spectrum data written');
+console.log('Spectral data written');
