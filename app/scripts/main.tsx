@@ -27,8 +27,8 @@ const sceneConfig: ISceneConfig = {
   initialPopulation: initialPopulation.map( item => item.map( item2 => {return (Math.random() * (target[target.length-1] - target[0])) + (target[0]-20)}) ),
   populationSize: 16,
   target, // in frequency
-  timeBetweenEvents: 20,
-  gapBetweenEvents: 25,
+  timeBetweenEvents: () => (Math.random() * 15) + 5,
+  gapBetweenEvents: () => utils.choose([45,10]),
   melodyOscillators,
   chordOscillators,
 }
