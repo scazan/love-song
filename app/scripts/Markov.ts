@@ -1,31 +1,5 @@
 
-import utils from "./utils";
-
-let isEquivalent = (a, b): boolean => {
-  // Create arrays of property names
-  var aProps = Object.getOwnPropertyNames(a);
-  var bProps = Object.getOwnPropertyNames(b);
-
-  // If number of properties is different,
-  // objects are not equivalent
-  if (aProps.length != bProps.length) {
-    return false;
-  }
-
-  for (var i = 0; i < aProps.length; i++) {
-    var propName = aProps[i];
-
-    // If values of same property are not equal,
-    // objects are not equivalent
-    if (a[propName] !== b[propName]) {
-      return false;
-    }
-  }
-
-  // If we made it this far, objects
-  // are considered equivalent
-  return true;
-};
+import { isEquivalent, normalize, windex } from "./utils";
 
 class Markov {
     dictionary: Array<number>;
@@ -47,7 +21,6 @@ class Markov {
   }
 
   createTransitionMatrix(input, order): Array< Array<number> > {
-    // Gets only unique elements
     this.dictionary = input;
 
     // Compute all possible combinations of the dictionary
@@ -96,7 +69,7 @@ class Markov {
     }
 
 
-    transitionMatrix = transitionMatrix.map( utils.normalize );
+    transitionMatrix = transitionMatrix.map( normalize );
 
     return transitionMatrix;
   }
@@ -111,7 +84,7 @@ class Markov {
 
     let probabilities: Array<number> = transitionMatrix[indexOfCurrentState];
 
-    let nextIndex: number = utils.windex( probabilities );
+    let nextIndex: number = windex( probabilities );
     return this.dictionary[nextIndex];
   }
 
