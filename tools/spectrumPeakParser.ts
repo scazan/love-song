@@ -56,17 +56,22 @@ const getMostProminentFrequencies = ( data: IFreqBin[] ): number[] =>
 
 const spectrumDataPath = './tools/spectrumData';
 
-const audioObjects:ISpectrumConfig[] = fs.readdirSync(spectrumDataPath).map(file => {
-  const data: IFreqBin[] = parseAudacityFile( fs.readFileSync(spectrumDataPath + '/' + file, 'utf8') );
-  const peaks: IFreqBin[] = getPeakFrequencies(data);
-  const spectrum: number[] = getMostProminentFrequencies( peaks );
-  const audioFile = file.replace('.txt', '.mp3');
+const audioObjects:ISpectrumConfig[] = fs.readdirSync(spectrumDataPath).reduce(( accum, file ) => {
+  if( file.match(/.txt$/) ) {
+    const data: IFreqBin[] = parseAudacityFile( fs.readFileSync(spectrumDataPath + '/' + file, 'utf8') );
+    const peaks: IFreqBin[] = getPeakFrequencies(data);
+    const spectrum: number[] = getMostProminentFrequencies( peaks );
+    const audioFile = file.replace('.txt', '.mp3');
 
-  return {
-    audioFile,
-    spectrum
-  };
-});
+    return [...accum, {
+      audioFile,
+      spectrum
+    }];
+  }
+  else {
+      return accum;
+    }
+}, []);
 
 fs.writeFileSync('./app/scripts/spectralData.json', JSON.stringify(audioObjects));
 

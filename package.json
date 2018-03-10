@@ -10,6 +10,7 @@
     "sync": "./buildScripts/sync.sh",
     "buildSCSS": "./buildScripts/buildSCSS.sh",
     "dev": "npm start & webpack",
+    "copySamples": "cp -r ./app/samples/* ./server/dist/samples/",
     "parseSpectrum": "./node_modules/ts-node/dist/bin.js ./tools/spectrumPeakParser.ts"
   },
   "repository": {
