@@ -24,7 +24,7 @@ class MultiSampler implements ISoundPlayer {
     let gain = 1;
     const samplePlayer = this.findClosestSamplePlayer( freq );
     const currentlyPlayingSampleID = samplePlayer.player.play();
-    samplePlayer.player.loop( true, currentlyPlayingSampleID );
+    samplePlayer.player.loop( false, currentlyPlayingSampleID );
     samplePlayer.player.rate( utils.getRateFromFrequencies( freq, samplePlayer.baseFreq ), currentlyPlayingSampleID );
     // some stupid basic pyschoacoustic shaping
     if(freq > 200) gain = gain*0.2;
