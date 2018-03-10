@@ -3,10 +3,10 @@ import utils from "./utils";
 
 
 class Genetic {
-  population: number[][];
-  goal: number[];
-  scores: number[];
-  lastState: number[];
+  public population: number[][];
+  private goal: number[];
+  private scores: number[];
+  private lastState: number[];
 
   constructor(inputPopulation: number[][], goal: number[]) {
     this.population = inputPopulation;

@@ -11,18 +11,21 @@ export interface ISpectrumConfig {
 
 export interface ISceneConfig {
   populationSize: number,
-  initialPopulation: any[],
+  initialPopulation: any[][],
   target: any[], // In Frequency
+  maxGenerations: number;
   timeBetweenEvents: any |number | Function,
   gapBetweenEvents: any | number | Function,
   melodyOscillators: ISoundPlayer[],
   chordOscillators: ISoundPlayer[],
+  onFinish: Function,
 }
 
 export class Scene {
   notes: IterableIterator<any>;
   currentGeneration: number;
   config: ISceneConfig;
+  onFinish: Function;
 
   public constructor(config: ISceneConfig) {
     this.config = config;
@@ -30,27 +33,36 @@ export class Scene {
     this.config.timeBetweenEvents = utils.makeFunction(this.config.timeBetweenEvents);
     this.config.gapBetweenEvents = utils.makeFunction(this.config.gapBetweenEvents);
     this.notes = p.Pgenetic(config.initialPopulation, config.target);
+    this.config.maxGenerations = config.maxGenerations;
     this.currentGeneration = 0;
+
+    this.config.onFinish = config.onFinish;
   }
 
   public play(): Scene {
-    const nextGen = this.notes.next().value;
-    const newNotes = nextGen;
+    const nextGen: number[] = this.notes.next().value;
+    const newNotes: number[] = nextGen;
 
     let i = 0;
     let k = (Math.random() > 0.5) ? 0 : 1;
     this.config.chordOscillators.map((osc) => {
-      const octave = Math.ceil(Math.random() * 8);
+      const octave = Math.ceil(Math.random() * 5);
       osc.play({freq: newNotes[i]/octave, time: this.config.timeBetweenEvents(), pan: ((k%2)*2) - 1, vol: 0.2}); i++; k++;
     });
 
     this.playMelody(newNotes, this.currentGeneration);
 
     console.log('GENETIC GENERATION: ', this.currentGeneration, nextGen);
-    window.setTimeout(() => {
+    if(this.currentGeneration <= (this.config.maxGenerations-1) ) {
+      window.setTimeout(() => {
+        this.currentGeneration++;
+        this.play();
+      }, (this.config.timeBetweenEvents() + this.config.gapBetweenEvents()) * 1000);
+    }
+    else {
       this.currentGeneration++;
-      this.play();
-    }, (this.config.timeBetweenEvents() + this.config.gapBetweenEvents()) * 1000);
+      this.endOfScene();
+    }
 
     return this;
   }
@@ -66,7 +78,7 @@ export class Scene {
 
     let i = 0;
     const playNextNote = (generation) => {
-      const octave = Math.ceil(Math.random() * 3) + Math.ceil(Math.random() * 3 ) + 3;
+      const octave = Math.ceil(Math.random() * 3) + Math.ceil(Math.random() * 3 ) + 2;
       const nextNote = markovMelody.next().value;
 
       if(nextNote !== undefined && utils.flipCoin(0.75) ) { // Sometimes probablities are zero, so we'll get an undefined next state
@@ -80,7 +92,7 @@ export class Scene {
       i++;
 
       window.setTimeout(() => {
-        if(generation === this.currentGeneration) {
+        if(generation === this.currentGeneration && this.currentGeneration <= this.config.maxGenerations) {
           playNextNote(generation);
         }
       }, ((Math.random() * 2) + 0.5) * 1000);
@@ -90,5 +102,12 @@ export class Scene {
 
   }
 
+  private endOfScene() {
+    const onFinishCallback = this.config.onFinish;
+
+    this.config.chordOscillators.map( synth => synth.stop(1) );
+
+    window.setTimeout(onFinishCallback, 1000);
+  }
 }
 
