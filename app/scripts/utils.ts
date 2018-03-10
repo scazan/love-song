@@ -96,3 +96,10 @@ export const isEquivalent = (a, b): boolean => {
   // are considered equivalent
   return true;
 };
+
+
+export const getSequentialRandomIndex = ( lastIndex: number, length: number ): number => {
+  const possibleIndexes = Array(length).fill(0).map( (item,i) => i).filter(item => item !== lastIndex);
+
+  return utils.choose(possibleIndexes);
+};

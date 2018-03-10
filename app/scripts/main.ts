@@ -4,6 +4,7 @@ import { Scene, ISceneConfig } from './Scene';
 import Synth from './Synth';
 import MultiSampler from './MultiSampler';
 import utils from './utils';
+import { getSequentialRandomIndex } from './utils';
 
 import * as spectralData from './spectralData.json';
 const backgroundSamples = <any>spectralData;
@@ -29,13 +30,6 @@ const sourceSamples = backgroundSamples.map( sampleData => new MultiSampler(cont
   ],
 }));
 
-const getSequentialRandomIndex = ( lastIndex, length ): number => {
-  const possibleIndexes = Array(length).fill(0).map( (item,i) => i).filter(item => item !== lastIndex);
-
-  return utils.choose(possibleIndexes);
-};
-
-
 let sampleIndex = 0;
 const playNewScene = () => {
   const initialPopulation: number[][] = Array(80).fill( Array(populationSize).fill(0) );
@@ -57,7 +51,7 @@ const playNewScene = () => {
     onFinish: playNewScene
   }
 
-  sourceSamples[sampleIndex].play({freq: 1, time: 60 * 3 * 1000, vol: 0.1});
+  sourceSamples[sampleIndex].play({freq: 1, time: 60 * 3 * 1000, vol: 0.3});
 
   // Start the scene
   new Scene(sceneConfig).play();
