@@ -1,41 +1,65 @@
 import {ISpectrumConfig} from '../app/scripts/Scene';
 
 const fs = require('fs');
-const slayer = require('slayer');
 
-const getPeakFrequencies = async (data: number[][]) => {
-  const peaks = await slayer({
-    minPeakHeight: -70,
-  })
-    .y(item => item[1])
-    .fromArray(data)
+interface IFreqBin {
+  freq: number,
+  magnitude: number,
+}
+
+const getPeakFrequencies = (data: IFreqBin[]) => {
+  const peaks = [];
+  let lastDirection = 'down';
+  let lastBin = undefined;
+
+  data.map( ( bin: IFreqBin, i ) => {
+    let direction;
+    if( lastBin ) {
+      if( lastBin.magnitude < bin.magnitude ) {
+        direction = 'up';
+      }
+      else if(lastBin.magnitude === bin.magnitude) {
+        direction = lastDirection;
+      }
+      else {
+        direction = 'down';
+      }
+    }
+
+    if( direction === 'down' && lastDirection === 'up' ) {
+      peaks.push(lastBin);
+    }
+
+    lastBin = bin;
+    lastDirection = direction;
+  });
 
   return peaks;
 };
 
-// Need to actually get peaks as opposed to most prominent frequencies
-const parseAudacityFile = data =>
+const parseAudacityFile = (data: string): IFreqBin[] =>
   data
     .split('\r')
     .map( freqDB =>
       freqDB.split('\t')
         .map( elem => parseFloat(elem))
     )
-    //.filter( freqDB => (freqDB[0] < 10000) && (freqDB[0] >= 60) )
+  .map( freqDB => ({freq: freqDB[0], magnitude: freqDB[1]}) );
 
-const getMostProminentFrequencies = data =>
+const getMostProminentFrequencies = ( data: IFreqBin[] ): number[] =>
   data
-    .sort( (a, b) => b[1] - a[1] )
+    .filter( (bin: IFreqBin) => (bin.freq < 10000) && (bin.freq >= 50) )
+    .sort( (a, b) => b.magnitude - a.magnitude )
     .splice(0,16)
-    .map( tuple => tuple[0] );
+    .map( bin => bin.freq );
 
 
 const spectrumDataPath = './tools/spectrumData';
 
 const audioObjects:ISpectrumConfig[] = fs.readdirSync(spectrumDataPath).map(file => {
-  const data = parseAudacityFile( fs.readFileSync(spectrumDataPath + '/' + file, 'utf8') );
-  const peaks = await getPeakFrequencies(data);
-  const spectrum = getMostProminentFrequencies( peaks.map(item => [item.x, item.y]) );
+  const data: IFreqBin[] = parseAudacityFile( fs.readFileSync(spectrumDataPath + '/' + file, 'utf8') );
+  const peaks: IFreqBin[] = getPeakFrequencies(data);
+  const spectrum: number[] = getMostProminentFrequencies( peaks );
   const audioFile = file.replace('.txt', '.mp3');
 
   return {
