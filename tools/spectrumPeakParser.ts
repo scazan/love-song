@@ -2,7 +2,7 @@ import {ISpectrumConfig} from '../app/scripts/Scene';
 
 const fs = require('fs');
 
-interface IFreqBin {
+export interface IFreqBin {
   freq: number,
   magnitude: number,
 }
@@ -46,13 +46,11 @@ const parseAudacityFile = (data: string): IFreqBin[] =>
     )
   .map( freqDB => ({freq: freqDB[0], magnitude: freqDB[1]}) );
 
-const getMostProminentFrequencies = ( data: IFreqBin[] ): number[] =>
+const getMostProminentFrequencies = ( data: IFreqBin[] ): IFreqBin[] =>
   data
     .filter( (bin: IFreqBin) => (bin.freq < 10000) && (bin.freq >= 50) )
     .sort( (a, b) => b.magnitude - a.magnitude )
     .splice(0,16)
-    .map( bin => bin.freq );
-
 
 const spectrumDataPath = './tools/spectrumData';
 
@@ -60,7 +58,7 @@ const audioObjects:ISpectrumConfig[] = fs.readdirSync(spectrumDataPath).reduce((
   if( file.match(/.txt$/) ) {
     const data: IFreqBin[] = parseAudacityFile( fs.readFileSync(spectrumDataPath + '/' + file, 'utf8') );
     const peaks: IFreqBin[] = getPeakFrequencies(data);
-    const spectrum: number[] = getMostProminentFrequencies( peaks );
+    const spectrum: IFreqBin[] = getMostProminentFrequencies( peaks );
     const audioFile = file.replace('.txt', '.mp3');
 
     return [...accum, {

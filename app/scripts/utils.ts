@@ -35,7 +35,7 @@ const utils = {
     return set.map( member => utils.getClosestMember( (( (member - Math.min(...set)) / setRange) * domainRange ) + setOffset, domain));
   },
 
-  flipCoin: (probability=0.5): boolean => (Math.random() > probability) ? false : true,
+  flipCoin: (probability=0.5): boolean => (Math.random() < probability) ? false : true,
 
   makeFunction: (value): Function => {
     if(typeof value === "function") {

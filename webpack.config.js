@@ -11,6 +11,7 @@ module.exports = {
 	resolve: {
 		extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
 	},
+  devtool: '#inline-source-map',
 	module: {
 		loaders: [
 			{

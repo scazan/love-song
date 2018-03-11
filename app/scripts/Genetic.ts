@@ -51,9 +51,9 @@ class Genetic {
     const topGenerationScore: number = scores[indexOfHighestScore];
 
 
-    const coinFlipForMutate = Math.random() * 4;
+    const coinFlipForMutate = utils.flipCoin(0.25);
 
-    if(coinFlipForMutate <= 1) {
+    if(coinFlipForMutate) {
       indexOfNextHighestScore = Math.floor(Math.random() * scores.length);
     }
     else {

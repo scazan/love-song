@@ -2,11 +2,12 @@
 import { Patterns as p } from './patterns';
 import Synth from './Synth';
 import {ISoundPlayer} from './SoundPlayer';
+import {IFreqBin} from '../../tools/spectrumPeakParser';
 import utils from './utils';
 
 export interface ISpectrumConfig {
   audioFile: string,
-  spectrum: number[],
+  spectrum: IFreqBin[],
 }
 
 export interface ISceneConfig {
