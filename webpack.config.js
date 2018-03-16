@@ -2,11 +2,11 @@
 const path = require('path');
 
 module.exports = {
-	watch: true,
-	entry: './app/scripts/main.ts',
+	watch: false,
+	entry: './src/wns.ts',
 	output: {
-		filename: 'main.js',
-		path: path.resolve(__dirname + '/server/dist/', 'scripts')
+		filename: 'wns.js',
+		path: path.resolve(__dirname)
 	},
 	resolve: {
 		extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]

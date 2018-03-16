@@ -1,25 +1,19 @@
 {
-  "name": "generativePiece",
+  "name": "wns",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "CareOf Generative Piece",
+  "main": "wns.js",
   "scripts": {
-    "start": "node server/planetCounter.js",
-    "build": "./buildScripts/bootstrap.sh && npm run buildSCSS && webpack && cp -r ./app/index.html ./server/dist/index.html && cp -r ./app/img/* ./server/dist/img/ && cp -r ./app/samples/* ./server/dist/samples/",
-    "copyAppToDist": "cp -r ./app/* ./server/dist/",
-    "sync": "./buildScripts/sync.sh",
-    "buildSCSS": "./buildScripts/buildSCSS.sh",
-    "dev": "npm start & webpack",
-    "copySamples": "cp -r ./app/samples/* ./server/dist/samples/",
+    "build": "webpack",
     "parseSpectrum": "./node_modules/ts-node/dist/bin.js ./tools/spectrumPeakParser.ts"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/scazan/planetCounter.git"
+    "url": "git+https://github.com/scazan/wns.git"
   },
   "author": "Scott Cazan",
   "license": "ISC",
-  "homepage": "https://github.com/scazan/planetCounter#readme",
+  "homepage": "http://scottcazan.com",
   "dependencies": {
     "@types/howler": "^2.0.5",
     "@types/node": "^9.4.6",

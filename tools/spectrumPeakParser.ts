@@ -1,4 +1,4 @@
-import {ISpectrumConfig} from '../app/scripts/Scene';
+import {ISpectrumConfig} from '../src/Scene';
 
 const fs = require('fs');
 
