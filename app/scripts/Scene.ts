@@ -1,5 +1,5 @@
 
-import { Patterns as p } from './patterns';
+import { Pmarkov, Pgenetic } from './patterns';
 import Synth from './Synth';
 import {ISoundPlayer} from './SoundPlayer';
 import {IFreqBin} from '../../tools/spectrumPeakParser';
@@ -33,7 +33,7 @@ export class Scene {
 
     this.config.timeBetweenEvents = utils.makeFunction(this.config.timeBetweenEvents);
     this.config.gapBetweenEvents = utils.makeFunction(this.config.gapBetweenEvents);
-    this.notes = p.Pgenetic(config.initialPopulation, config.target);
+    this.notes = Pgenetic(config.initialPopulation, config.target);
     this.config.maxGenerations = config.maxGenerations;
     this.currentGeneration = 0;
 
@@ -75,7 +75,7 @@ export class Scene {
     const idealMelody = utils.mapToDomain([0,4,2,0,7,4,2,7,7,4,2,2,4,4,2,0], newNotes);
     const randomShiftAmount = Math.floor(Math.random() * (idealMelody.length))
     const initialState = [...idealMelody.slice(randomShiftAmount), ...idealMelody.slice(0, -(idealMelody.length-randomShiftAmount))]
-    const markovMelody = p.Pmarkov(idealMelody, 1, initialState.slice(-2) );
+    const markovMelody = Pmarkov(idealMelody, 1, initialState.slice(-2) );
 
     let i = 0;
     const playNextNote = (generation) => {

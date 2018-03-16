@@ -1,4 +1,3 @@
-import { Patterns as p } from './patterns';
 import { Scene, ISceneConfig } from './Scene';
 import Synth from './Synth';
 import MultiSampler from './MultiSampler';
