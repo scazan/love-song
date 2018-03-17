@@ -1,7 +1,7 @@
 
-server/dist/
-server/dist/**/*.*
-server/node_modules/
+example/server/dist/
+example/server/dist/**/*.*
+example/server/node_modules/
 node_modules/
 .sass-cache/
 *.vim

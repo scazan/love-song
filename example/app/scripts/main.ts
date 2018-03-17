@@ -1,5 +1,5 @@
 
-import { WNS } from '../../../src/wns';
+import { WNS } from '../../../build/wns';
 
 WNS({
   samplePath: "samples/",

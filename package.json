@@ -2,7 +2,7 @@
   "name": "wns",
   "version": "1.0.0",
   "description": "CareOf Generative Piece",
-  "main": "wns.js",
+  "main": "build/wns.js",
   "scripts": {
     "build": "webpack",
     "parseSpectrum": "./node_modules/ts-node/dist/bin.js ./tools/spectrumPeakParser.ts"

@@ -1,12 +1,17 @@
 
 {
     "compilerOptions": {
-        "outDir": "./server/dist/scripts",
+        "outDir": "./build",
         "target": "es6",
         "allowJs": true,
-        "module": "es2015"
+        "module": "es2015",
+        "sourceMap": true
     },
     "include": [
-        "./app/scripts/**/*"
+        "./src/**/*"
+    ],
+    "exclude": [
+      "node_modules",
+      "examples"
     ]
 }

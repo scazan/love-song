@@ -1,0 +1,12 @@
+
+{
+    "compilerOptions": {
+        "outDir": "./server/dist/scripts",
+        "target": "es6",
+        "allowJs": true,
+        "module": "es2015"
+    },
+    "include": [
+        "./app/scripts/**/*"
+    ]
+}

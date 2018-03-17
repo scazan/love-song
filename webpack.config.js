@@ -2,7 +2,7 @@
 const path = require('path');
 
 module.exports = {
-	watch: false,
+	watch: true,
 	entry: './src/wns.ts',
 	output: {
 		filename: 'wns.js',

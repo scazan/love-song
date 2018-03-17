@@ -5,7 +5,7 @@ import {IFreqBin} from '../tools/spectrumPeakParser';
 import utils from './utils';
 import { getSequentialRandomIndex } from './utils';
 
-import * as spectralData from './spectralData.json';
+import spectralData from './spectralData.json';
 
 export interface IWNSConfig {
   samplePath: string
