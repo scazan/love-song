@@ -1,5 +1,5 @@
 example
 src
 tools
-tconfig.json
+tsconfig.json
 webpack.config.js
