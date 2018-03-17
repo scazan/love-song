@@ -2,11 +2,11 @@
 const path = require('path');
 
 module.exports = {
-  watch: true,
+  watch: false,
   entry: './src/wns.ts',
   output: {
     filename: 'wns.js',
-    path: './build'
+    path: path.resolve(__dirname, 'build')
   },
   resolve: {
     extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
