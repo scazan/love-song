@@ -71,6 +71,6 @@ const audioObjects:ISpectrumConfig[] = fs.readdirSync(spectrumDataPath).reduce((
     }
 }, []);
 
-fs.writeFileSync('./samples/spectralData.json', JSON.stringify(audioObjects));
+fs.writeFileSync('./src/spectralData.json', JSON.stringify(audioObjects));
 
 console.log('Spectral data written');
