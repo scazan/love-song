@@ -28,6 +28,9 @@ export const WNS = (config?: IWNSConfig) => {
 
   const multiSamplerOpts = {
     samples: [
+      { files: [ config.samplePath + "piano1.mp3" ], freq: 202 },
+      { files: [ config.samplePath + "piano2-324.mp3" ], freq: 324 },
+      { files: [ config.samplePath + "piano3-814.mp3" ], freq: 324 },
       { files: [ config.samplePath + "pipeG.mp3" ], freq: 199 },
       { files: [ config.samplePath + "pipeD.mp3" ], freq: 306 },
       { files: [ config.samplePath + "pipeA.mp3" ], freq: 445 },
