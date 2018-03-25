@@ -83,11 +83,12 @@ export class Scene {
       const nextNote = markovMelody.next().value;
 
       if(nextNote !== undefined && utils.flipCoin(0.75) ) { // Sometimes probablities are zero, so we'll get an undefined next state
+        console.log('playing note', nextNote);
         this.config.melodyOscillators[i % this.config.melodyOscillators.length].play({
           freq: nextNote/octave,
           time: 3 + (Math.random() * 14),
           pan: 0,
-          vol: 0.05
+          vol: 0.15
         });
       }
       i++;

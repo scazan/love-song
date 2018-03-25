@@ -6,7 +6,10 @@ module.exports = {
   entry: './src/wns.ts',
   output: {
     filename: 'wns.js',
-    path: path.resolve(__dirname, 'build')
+    path: path.resolve(__dirname, 'build'),
+    library: "wns",
+    libraryTarget: 'umd',
+    umdNamedDefine: true
   },
   resolve: {
     extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]

@@ -15,7 +15,7 @@ const defaultConfig: IWNSConfig = {
   samplePath: "samples/",
 };
 
-export const WNS = (config?: IWNSConfig) => {
+const wns = (config?: IWNSConfig) => {
   config = config ? {...defaultConfig, ...config} : defaultConfig;
 
   const backgroundSamples = <any>spectralData;
@@ -85,3 +85,5 @@ export const WNS = (config?: IWNSConfig) => {
 
   playNewScene();
 };
+
+export {wns};

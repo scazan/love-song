@@ -5,6 +5,7 @@
   "main": "build/wns.js",
   "scripts": {
     "build": "webpack",
+    "dev": "webpack  --progress --colors --watch",
     "parseSpectrum": "./node_modules/ts-node/dist/bin.js ./tools/spectrumPeakParser.ts"
   },
   "repository": {
