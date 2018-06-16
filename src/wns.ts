@@ -28,12 +28,12 @@ const wns = (config?: IWNSConfig) => {
 
   const multiSamplerOpts = {
     samples: [
+      //{ files: [ config.samplePath + "pipeG.mp3" ], freq: 199 },
+      //{ files: [ config.samplePath + "pipeD.mp3" ], freq: 306 },
+      //{ files: [ config.samplePath + "pipeA.mp3" ], freq: 445 },
+      //{ files: [ config.samplePath + "pipeE.mp3" ], freq: 666 },
       { files: [ config.samplePath + "piano2-324.mp3" ], freq: 324 },
       { files: [ config.samplePath + "piano3-814.mp3" ], freq: 814 },
-      { files: [ config.samplePath + "pipeG.mp3" ], freq: 199 },
-      { files: [ config.samplePath + "pipeD.mp3" ], freq: 306 },
-      { files: [ config.samplePath + "pipeA.mp3" ], freq: 445 },
-      { files: [ config.samplePath + "pipeE.mp3" ], freq: 666 },
     ],
   };
   const melodyOscillators = Array(populationSize).fill(0).map(() => utils.flipCoin() ? new MultiSampler( context, multiSamplerOpts ) : new Synth(context));
