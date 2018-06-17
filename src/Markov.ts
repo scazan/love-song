@@ -7,7 +7,7 @@ class Markov {
     lastState: Array<number>;
     transitionMatrix: Array<Array<number>>;
 
-  constructor(input: Array<any>, order: number) {
+  constructor(input: any[], order: number) {
     this.dictionary = [],
     this.combinations = [];
 
