@@ -66,7 +66,7 @@ export const windex = (weights: Array<number>): number => {
   }
 };
 
-export const normalize = (coll: Array<number>): Array<number> => {
+export const normalize = (coll: number[]): number[] => {
   let collSum = coll.reduce((a,b) => a+b);
   return collSum > 0 ? coll.map( (weight) => weight / collSum) : coll.map(() => 0);
 };

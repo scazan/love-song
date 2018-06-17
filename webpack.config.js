@@ -7,7 +7,7 @@ module.exports = {
   output: {
     filename: 'wns.js',
     path: path.resolve(__dirname, 'build'),
-    library: "wns",
+    library: "WNS",
     libraryTarget: 'umd',
     umdNamedDefine: true
   },
