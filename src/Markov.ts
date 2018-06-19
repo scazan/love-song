@@ -1,5 +1,28 @@
 
-import { isEquivalent, normalize, windex } from "./utils";
+import { isEquivalent, normalize, windex, mod } from "./utils";
+
+export const getAllTransitions = (input: any[], order: number) => {
+  return input.reduce( (accum, item, index) => {
+    const state = [];
+
+    for(let offset = order; offset >= 0; offset--) {
+      state.push( input[mod(index-offset, input.length)]);
+    }
+
+    accum.push(state);
+
+    return accum;
+  }, []);
+};
+
+const addToBuffer = (buffer: any[], value: any) => {
+  const newBuffer = [...buffer];
+
+  newBuffer.shift();
+  newBuffer.push(value);
+
+  return newBuffer;
+};
 
 class Markov {
     dictionary: Array<number>;
@@ -21,18 +44,13 @@ class Markov {
   }
 
   createTransitionMatrix(input, order): Array< Array<number> > {
+    // TODO: Probably should de-dupe this here
     this.dictionary = input;
 
     // Compute all possible combinations of the dictionary
-    this.combinations = [];
-    for(let i=0; i < this.dictionary.length; i++) {
-      for(let k=0; k < this.dictionary.length; k++) {
-        this.combinations.push([this.dictionary[i], this.dictionary[k]]);
-      }
-    }
+    this.combinations = getAllTransitions(input, order);
 
     // Setup the transitionMatrix (should be based on order)
-    //TODO: This is hardcoded to 1st order. Make dynamic.
     let transitionMatrix = [];
     for(let i=0; i < this.combinations.length; i++) {
       let dictionaryLengthArray = [];
@@ -46,13 +64,10 @@ class Markov {
 
     // Tally the given combinations to add into the transitionMatrix
     for(let i=0; i < input.length; i++) {
-      let currentState;
+      let currentState = [];
 
-      if(i == 0) {
-        currentState = [ input[input.length-1], input[i] ];
-      }
-      else {
-        currentState = [ input[i-(order-1)], input[i] ];
+      for(let offset = order; offset >= 0; offset--) {
+        currentState.push( input[mod(i-offset, input.length)]);
       }
 
       let indexOfCurrentState = this.combinations.findIndex( (item) => {
@@ -63,11 +78,10 @@ class Markov {
       let nextState = input[(i+1) % input.length];
       let dictionaryIndexOfNextState = this.dictionary.indexOf(nextState);
 
-      // increment the amount of times this transition has occurred
+      // increment the amount of times this transition has occurred (to be normalized later)
       transitionMatrix[indexOfCurrentState][dictionaryIndexOfNextState]++;
 
     }
-
 
     transitionMatrix = transitionMatrix.map( normalize );
 
@@ -78,13 +92,11 @@ class Markov {
   getNextState(state: any): any {
     const transitionMatrix: Array< Array<number> > = this.transitionMatrix;
 
-    let indexOfCurrentState: number = this.combinations.findIndex( (item) => {
-      return isEquivalent(state, item);
-    });
+    const indexOfCurrentState: number = this.combinations.findIndex( item => isEquivalent(state, item) );
 
-    let probabilities: Array<number> = transitionMatrix[indexOfCurrentState];
+    const probabilities: number[] = transitionMatrix[indexOfCurrentState];
 
-    let nextIndex: number = windex( probabilities );
+    const nextIndex: number = windex( probabilities );
     return this.dictionary[nextIndex];
   }
 
@@ -96,7 +108,7 @@ class Markov {
 
       while(true) {
         let nextState: number = self.getNextState(self.lastState);
-        self.lastState = [self.lastState[self.lastState.length-1], nextState];
+        self.lastState = addToBuffer(self.lastState, nextState);
 
         yield nextState;
       }

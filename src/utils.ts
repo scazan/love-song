@@ -97,6 +97,7 @@ export const isEquivalent = (a, b): boolean => {
   return true;
 };
 
+export const mod = (num, modulo) => (num % modulo + modulo) % modulo;
 
 export const getSequentialRandomIndex = ( lastIndex: number, length: number ): number => {
   const possibleIndexes = Array(length).fill(0).map( (item,i) => i).filter(item => item !== lastIndex);

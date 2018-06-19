@@ -16,7 +16,6 @@ class MultiSampler implements ISoundPlayer {
   constructor(context, opt: { samples: ISample[] } ) {
     this.context = context;
     this.players = opt.samples.map( sampleConfig => ({player: new Howl({src: sampleConfig.files}), baseFreq: sampleConfig.freq}) );
-    console.log(this.players)
   }
 
   public play(opt: IPlayOptions) {

@@ -3,6 +3,7 @@ import { Pmarkov, Pgenetic } from './patterns';
 import Synth from './Synth';
 import {ISoundPlayer} from './SoundPlayer';
 import {IFreqBin} from '../tools/spectrumPeakParser';
+import { mod } from './utils';
 import utils from './utils';
 
 export interface ISpectrumConfig {
@@ -53,7 +54,7 @@ export class Scene {
 
     this.playMelody(newNotes, this.currentGeneration);
 
-    console.log('GENETIC GENERATION: ', this.currentGeneration, nextGen);
+    //console.log('GENETIC GENERATION: ', this.currentGeneration, nextGen);
     if(this.currentGeneration <= (this.config.maxGenerations-1) ) {
       window.setTimeout(() => {
         this.currentGeneration++;
@@ -69,13 +70,19 @@ export class Scene {
   }
 
   private playMelody( notes, generation ): void {
+    const order = 3;
     const newNotes = notes;
 
     // Taken from the sequence of pitches in "Forever in Blue Jeans" by Neil Diamond
     const idealMelody = utils.mapToDomain([0,4,2,0,7,4,2,7,7,4,2,2,4,4,2,0], newNotes);
-    const randomShiftAmount = Math.floor(Math.random() * (idealMelody.length))
-    const initialState = [...idealMelody.slice(randomShiftAmount), ...idealMelody.slice(0, -(idealMelody.length-randomShiftAmount))]
-    const markovMelody = Pmarkov(idealMelody, 1, initialState.slice(-2) );
+    const randomShiftAmount = Math.floor(Math.random() * (idealMelody.length));
+
+    const initialState = [];
+    for(let offset = order; offset >= 0; offset--) {
+      initialState.push( idealMelody[mod(randomShiftAmount-offset, idealMelody.length)]);
+    }
+
+    const markovMelody = Pmarkov(idealMelody, order, initialState );
 
     let i = 0;
     const playNextNote = (generation) => {

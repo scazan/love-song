@@ -40,7 +40,7 @@ export const Prand = function* Prand(values: Array<any>, repetitions: number){
   }
 };
 
-export const Pmarkov = function* Pmarkov(seed: Array<any>, order: number, initialState: Array<any>) {
+export const Pmarkov = function* Pmarkov(seed: any[], order: number, initialState: any[]) {
   let markovChain: Markov = new Markov(seed, order);
 
   let lastState: any = initialState;
