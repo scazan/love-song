@@ -93,7 +93,7 @@ export class Scene {
         console.log('playing note', nextNote);
         this.config.melodyOscillators[i % this.config.melodyOscillators.length].play({
           freq: nextNote/octave,
-          time: 3 + (Math.random() * 14),
+          time: 1 + (Math.random() * 4),
           pan: 0,
           vol: 0.15
         });
