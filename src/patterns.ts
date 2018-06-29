@@ -1,8 +1,8 @@
 /*
- * Basic Patterns implementation for Gibberish
+ * Basic Patterns implementation
  */
 
-import { Markov } from "./Markov";
+const Markov = require("markovn").default;
 import { Genetic } from "./Genetic";
 
 
@@ -40,18 +40,10 @@ export const Prand = function* Prand(values: Array<any>, repetitions: number){
   }
 };
 
-export const Pmarkov = function* Pmarkov(seed: any[], order: number, initialState: any[]) {
-  let markovChain: Markov = new Markov(seed, order);
+export const Pmarkov = function Pmarkov(seed: any[], order: number, initialState: any[]) {
+  const markovChain = new Markov(seed, order);
 
-  let lastState: any = initialState;
-
-  while(true) {
-    let nextState: any = markovChain.getNextState(lastState);
-
-    lastState = [...lastState.slice(1), nextState];
-
-    yield nextState;
-  }
+  return markovChain.asPattern(initialState);
 };
 
 export const Pgenetic = function* Pgenetic(inputPopulation: number[][], goal: number[]) {

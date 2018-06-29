@@ -59,7 +59,7 @@ class Synth implements ISoundPlayer {
     const {freq=220, time=1, pan=0, vol=1} = opt;
     this.init();
 
-    let gain = 0.002;
+    let gain = 0.01;
     this.oscillator.frequency.value = freq;
 
     // some stupid basic pyschoacoustic shaping
