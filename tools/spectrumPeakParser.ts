@@ -37,6 +37,7 @@ const getPeakFrequencies = (data: IFreqBin[]) => {
   return peaks;
 };
 
+// This was based on a specific version of Audacity. The spectrum files in Audacity have changed since. Will update with version as soon as I find the right one.
 const parseAudacityFile = (data: string): IFreqBin[] =>
   data
     .split('\r')
@@ -57,6 +58,7 @@ const spectrumDataPath = './tools/spectrumData';
 const audioObjects:ISpectrumConfig[] = fs.readdirSync(spectrumDataPath).reduce(( accum, file ) => {
   if( file.match(/.txt$/) ) {
     const data: IFreqBin[] = parseAudacityFile( fs.readFileSync(spectrumDataPath + '/' + file, 'utf8') );
+    console.log('data', data);
     const peaks: IFreqBin[] = getPeakFrequencies(data);
     const spectrum: IFreqBin[] = getMostProminentFrequencies( peaks );
     const audioFile = file.replace('.txt', '.mp3');

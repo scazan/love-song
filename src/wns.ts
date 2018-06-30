@@ -1,5 +1,6 @@
 import { Scene, ISceneConfig } from './Scene';
 import Synth from './Synth';
+import { Noise } from './Noise';
 import MultiSampler from './MultiSampler';
 import {IFreqBin} from '../tools/spectrumPeakParser';
 import utils from './utils';
@@ -25,7 +26,7 @@ const WNS = (config?: IWNSConfig) => {
   const context = new AudioContext();
 
   const chordOscillators = Array(populationSize).fill(0).map(() =>
-    new Synth(context, { waveformType: 'square'})
+    new Synth(context)
   );
 
   const multiSamplerOpts = {
@@ -45,9 +46,41 @@ const WNS = (config?: IWNSConfig) => {
     ],
   }));
 
+  const bells = Array(2).fill(0).map( () =>
+    new Noise(context)
+  );
+
+  const playBells = () => {
+    const duration = 15;
+    bells.forEach( (bell, i) => {
+      const freqs = [2090, 2393];
+      bell.play({
+        pan: (i * 2) - 1,
+        freq: freqs[i],
+        vol: 8.8,
+        time: duration,
+      });
+    });
+
+    setTimeout(playNewScene, (duration + 10) * 1000); // Timing is weird in the player. This results in a gap which is what I want
+  };
+
   let sampleIndex = 0;
 
   const playNewScene = () => {
+    // Occasionally we want to pause for a moment to play an interlude in silence
+    const playInterlude = utils.flipCoin(0.85);
+
+    if(playInterlude) {
+      playBells();
+      window.setTimeout(() =>
+        sourceSamples.forEach( samplePlayer => samplePlayer.stop(0, samplePlayer.players[0]) ),
+        15 * 1000
+      );
+
+      return false;
+    }
+
     sampleIndex = getSequentialRandomIndex(sampleIndex, backgroundSamples.length);
     //const target = [193, 423, 1668, 2333, 2665, 3078, 4038, 6319, 193+1, 423+1, 1668+1, 2333+1, 2665+1, 3078+1, 4038+1, 6319+1 ]; // in frequency
     const backgroundSample = backgroundSamples[sampleIndex];
@@ -85,6 +118,7 @@ const WNS = (config?: IWNSConfig) => {
   };
 
   playNewScene();
+
 };
 
 export default WNS;

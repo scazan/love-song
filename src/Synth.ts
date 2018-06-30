@@ -51,7 +51,7 @@ class Synth implements ISoundPlayer {
     //this.panner.connect(this.context.destination);
     this.waveShaper.connect(this.context.destination);
 
-    this.oscillator.type = utils.flipCoin() ? 'triangle' : 'sine';
+    this.oscillator.type = this.config.waveformType ? this.config.waveformType : utils.flipCoin() ? 'triangle' : 'sine';
     this.gainNode.gain.value = 0;
   }
 
@@ -62,6 +62,7 @@ class Synth implements ISoundPlayer {
     let gain = 0.01;
     this.oscillator.frequency.value = freq;
 
+    opt.distortion && (this.waveShaper.curve = makeDistortionCurve(opt.distortion) );
     // some stupid basic pyschoacoustic shaping
     if(freq > 200) gain = gain*0.12;
     this.panner.pan.value = pan;

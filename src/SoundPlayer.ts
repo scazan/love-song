@@ -9,6 +9,7 @@ export interface IPlayOptions {
   time?: number,
   pan?: number,
   vol?: number,
+  distortion?: number,
 }
 
 export interface ISample {
