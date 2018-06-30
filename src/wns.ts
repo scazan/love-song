@@ -24,7 +24,7 @@ const WNS = (config?: IWNSConfig) => {
   const populationSize = 16;
   const context = new AudioContext();
 
-  const chordOscillators = Array(populationSize).fill(0).map(() => 
+  const chordOscillators = Array(populationSize).fill(0).map(() =>
     new Synth(context, { waveformType: 'square'})
   );
 
@@ -72,13 +72,13 @@ const WNS = (config?: IWNSConfig) => {
       maxGenerations: 2,
       target, // in frequency
       timeBetweenEvents: () => (Math.random() * 15) + 5,
-      gapBetweenEvents: () => utils.choose([45,10]),
+      gapBetweenEvents: () => utils.choose([25,10]),
       melodyOscillators,
       chordOscillators,
       onFinish: playNewScene
     }
 
-    sourceSamples[sampleIndex].play({freq: 1, time: 60 * 3 * 1000, vol: 0.3});
+    sourceSamples[sampleIndex].play({freq: 1, time: 60 * 3 * 1000, vol: 0.23});
 
     // Start the scene
     new Scene(sceneConfig).play();
