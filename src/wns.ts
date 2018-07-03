@@ -51,7 +51,7 @@ const WNS = (config?: IWNSConfig) => {
   );
 
   const playBells = () => {
-    const duration = 15;
+    const duration = 45;
     bells.forEach( (bell, i) => {
       const freqs = [2090, 2393];
       bell.play({
@@ -62,14 +62,14 @@ const WNS = (config?: IWNSConfig) => {
       });
     });
 
-    setTimeout(playNewScene, (duration + 10) * 1000); // Timing is weird in the player. This results in a gap which is what I want
+    setTimeout(playNewScene, (duration + 12) * 1000); // Timing is weird in the player. This results in a gap which is what I want
   };
 
   let sampleIndex = 0;
 
   const playNewScene = () => {
     // Occasionally we want to pause for a moment to play an interlude in silence
-    const playInterlude = utils.flipCoin(0.85);
+    const playInterlude = utils.flipCoin(0.80);
 
     if(playInterlude) {
       playBells();
@@ -117,7 +117,8 @@ const WNS = (config?: IWNSConfig) => {
     new Scene(sceneConfig).play();
   };
 
-  playNewScene();
+  //playNewScene();
+  playBells();
 
 };
 
