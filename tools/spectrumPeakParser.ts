@@ -37,10 +37,9 @@ const getPeakFrequencies = (data: IFreqBin[]) => {
   return peaks;
 };
 
-// This was based on a specific version of Audacity. The spectrum files in Audacity have changed since. Will update with version as soon as I find the right one.
 const parseAudacityFile = (data: string): IFreqBin[] =>
   data
-    .split('\r')
+    .split(/[\r\n]+/)
     .map( freqDB =>
       freqDB.split('\t')
         .map( elem => parseFloat(elem))
