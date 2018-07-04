@@ -67,11 +67,13 @@ const WNS = (config?: IWNSConfig) => {
 
   let sampleIndex = 0;
 
+  let interludeJustPlayed = false;
   const playNewScene = () => {
     // Occasionally we want to pause for a moment to play an interlude in silence
     const playInterlude = utils.flipCoin(0.80);
 
-    if(playInterlude) {
+    if(playInterlude && !interludeJustPlayed) {
+      interludeJustPlayed = true;
       playBells();
       window.setTimeout(() =>
         sourceSamples.forEach( samplePlayer => samplePlayer.stop(0, samplePlayer.players[0]) ),
@@ -81,6 +83,7 @@ const WNS = (config?: IWNSConfig) => {
       return false;
     }
 
+    interludeJustPlayed = false;
     sampleIndex = getSequentialRandomIndex(sampleIndex, backgroundSamples.length);
     //const target = [193, 423, 1668, 2333, 2665, 3078, 4038, 6319, 193+1, 423+1, 1668+1, 2333+1, 2665+1, 3078+1, 4038+1, 6319+1 ]; // in frequency
     const backgroundSample = backgroundSamples[sampleIndex];
