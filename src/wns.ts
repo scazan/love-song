@@ -94,7 +94,18 @@ const WNS = (config?: IWNSConfig) => {
     const target = backgroundSample.spectrum
       .reduce( (accum: IFreqBin[], bin: IFreqBin) => accum[0].magnitude < bin.magnitude ? [ bin ] : accum, [{freq: 0, magnitude: -100}])
       .map( bin => bin.freq)
-      .map( ( strongestFreq: number ) => Array(backgroundSample.spectrum.length).fill(0).map( (item, i) => strongestFreq * (i+1) ) )[0];
+      .map( ( strongestFreq: number ) => Array(backgroundSample.spectrum.length).fill(0).map( (item, i) => {
+        const harmonic = strongestFreq * (i+1);
+        const highestFreq = 7000;
+        if (harmonic > highestFreq) {
+          const divisor = Math.ceil(harmonic / highestFreq);
+          return harmonic / divisor;
+        }
+        else {
+          return harmonic;
+        }
+      })
+      )[0];
 
     const sceneConfig: ISceneConfig = {
       initialPopulation: initialPopulation.map(
@@ -107,7 +118,7 @@ const WNS = (config?: IWNSConfig) => {
       populationSize: 16,
       maxGenerations: 2,
       target, // in frequency
-      timeBetweenEvents: () => (Math.random() * 15) + 5,
+      timeBetweenEvents: () => (Math.random() * 15) + 10,
       gapBetweenEvents: () => utils.choose([25,10]),
       melodyOscillators,
       chordOscillators,
