@@ -53,11 +53,12 @@ const WNS = (config?: IWNSConfig) => {
   const playBells = () => {
     const duration = 45;
     bells.forEach( (bell, i) => {
+      const randomMul = (Math.random() * 0.25) + 1;
       const freqs = [2090, 2393];
       bell.play({
         pan: (i * 2) - 1,
-        freq: freqs[i],
-        vol: 8.8,
+        freq: freqs[i] * randomMul,
+        vol: 7.8,
         time: duration,
       });
     });

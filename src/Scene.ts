@@ -91,7 +91,7 @@ export class Scene {
 
       //if(nextNote !== undefined && utils.flipCoin(0.75) ) { // Sometimes probablities are zero, so we'll get an undefined next state
       if(nextNote !== undefined && utils.flipCoin(0.55) ) { // Sometimes probablities are zero, so we'll get an undefined next state
-        console.log('playing note', nextNote);
+        //console.log('playing note', nextNote);
         this.config.melodyOscillators[i % this.config.melodyOscillators.length].play({
           freq: nextNote/octave,
           time: 1 + (Math.random() * 6),

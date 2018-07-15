@@ -63,8 +63,9 @@ class Synth implements ISoundPlayer {
     this.oscillator.frequency.value = freq;
 
     opt.distortion && (this.waveShaper.curve = makeDistortionCurve(opt.distortion) );
-    // some stupid basic pyschoacoustic shaping
+    // some stupid basic psychoacoustic shaping
     if(freq > 200) gain = gain*0.12;
+    if(freq > 6000) gain = gain*0.08;
     this.panner.pan.value = pan;
     this.oscillator.start(0);
     this.gainNode.gain.setTargetAtTime(vol * gain * (0.55 - (Math.random() * 0.01)), this.context.currentTime, time * 0.85 );
