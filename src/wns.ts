@@ -76,7 +76,10 @@ const WNS = (config?: IWNSConfig) => {
       interludeJustPlayed = true;
       playBells();
       window.setTimeout(() =>
-        sourceSamples.forEach( samplePlayer => samplePlayer.stop(0, samplePlayer.players[0]) ),
+        {
+          sourceSamples.forEach( samplePlayer => samplePlayer.stop(0, samplePlayer.players[0]) );
+          chordOscillators.forEach( synth => synth.stop(0) );
+        },
         15 * 1000
       );
 
