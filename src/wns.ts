@@ -53,11 +53,12 @@ const WNS = (config?: IWNSConfig) => {
   const playBells = () => {
     const duration = 45;
     bells.forEach( (bell, i) => {
+      const randomMul = (Math.random() * 0.25) + 1;
       const freqs = [2090, 2393];
       bell.play({
         pan: (i * 2) - 1,
-        freq: freqs[i],
-        vol: 8.8,
+        freq: freqs[i] * randomMul,
+        vol: 7.8,
         time: duration,
       });
     });
@@ -97,7 +98,18 @@ const WNS = (config?: IWNSConfig) => {
     const target = backgroundSample.spectrum
       .reduce( (accum: IFreqBin[], bin: IFreqBin) => accum[0].magnitude < bin.magnitude ? [ bin ] : accum, [{freq: 0, magnitude: -100}])
       .map( bin => bin.freq)
-      .map( ( strongestFreq: number ) => Array(backgroundSample.spectrum.length).fill(0).map( (item, i) => strongestFreq * (i+1) ) )[0];
+      .map( ( strongestFreq: number ) => Array(backgroundSample.spectrum.length).fill(0).map( (item, i) => {
+        const harmonic = strongestFreq * (i+1);
+        const highestFreq = 7000;
+        if (harmonic > highestFreq) {
+          const divisor = Math.ceil(harmonic / highestFreq);
+          return harmonic / divisor;
+        }
+        else {
+          return harmonic;
+        }
+      })
+      )[0];
 
     const sceneConfig: ISceneConfig = {
       initialPopulation: initialPopulation.map(
@@ -110,7 +122,7 @@ const WNS = (config?: IWNSConfig) => {
       populationSize: 16,
       maxGenerations: 2,
       target, // in frequency
-      timeBetweenEvents: () => (Math.random() * 15) + 5,
+      timeBetweenEvents: () => (Math.random() * 15) + 10,
       gapBetweenEvents: () => utils.choose([25,10]),
       melodyOscillators,
       chordOscillators,
