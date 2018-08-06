@@ -45,6 +45,11 @@ const WNS = (config?: IWNSConfig) => {
       { files: [ config.samplePath + sampleData.audioFile ], freq: 1 },
     ],
   }));
+  const lowDronePlayer = new MultiSampler(context, {
+    samples: [
+      { files: [ config.samplePath + "lowDrone.mp3" ], freq: 1 },
+    ],
+  });
 
   const bells = Array(2).fill(0).map( () =>
     new Noise(context)
@@ -66,17 +71,26 @@ const WNS = (config?: IWNSConfig) => {
     setTimeout(playNewScene, (duration + 12) * 1000); // Timing is weird in the player. This results in a gap which is what I want
   };
 
+  const playDrone = () => {
+    lowDroneIsPlaying = true;
+    console.log('playing DRONE');
+    setTimeout(() => { lowDroneIsPlaying = false; }, 300 * 1000); // Low Drone last 300*1000 milliseconds
+    lowDronePlayer.play({freq: 1, time: 300 * 1000, vol: 0.40});
+  };
+
   let sampleIndex = 0;
 
   let interludeJustPlayed = false;
+  let lowDroneIsPlaying = false;
   const playNewScene = () => {
     // Occasionally we want to pause for a moment to play an interlude in silence
     const playInterlude = utils.flipCoin(0.80);
+    const playLowDrone = utils.flipCoin(0.85);
 
     if(playInterlude && !interludeJustPlayed) {
       interludeJustPlayed = true;
       playBells();
-      window.setTimeout(() =>
+      setTimeout(() =>
         {
           sourceSamples.forEach( samplePlayer => samplePlayer.stop(0, samplePlayer.players[0]) );
           chordOscillators.forEach( synth => synth.stop(0) );
@@ -85,6 +99,10 @@ const WNS = (config?: IWNSConfig) => {
       );
 
       return false;
+    }
+
+    if(playLowDrone && !lowDroneIsPlaying) {
+      playDrone();
     }
 
     interludeJustPlayed = false;
