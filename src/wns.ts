@@ -73,9 +73,9 @@ const WNS = (config?: IWNSConfig) => {
 
   const playDrone = () => {
     lowDroneIsPlaying = true;
-    console.log('playing DRONE');
-    setTimeout(() => { lowDroneIsPlaying = false; }, 300 * 1000); // Low Drone last 300*1000 milliseconds
-    lowDronePlayer.play({freq: 1, time: 300 * 1000, vol: 0.40});
+    console.log('playing drone...');
+    setTimeout(() => { lowDroneIsPlaying = false; }, 330 * 1000); // Low Drone last 300*1000 milliseconds, add an extra 30 seconds after to decrease repetition
+    lowDronePlayer.play({freq: 1, time: 300 * 1000, vol: 0.70});
   };
 
   let sampleIndex = 0;
