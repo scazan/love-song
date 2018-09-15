@@ -15,7 +15,6 @@ const makeDistortionCurve = amount => {
 
 
 import {ISoundPlayer, IPlayOptions} from './SoundPlayer';
-import utils from './utils';
 
 interface ISynthOptions {
   waveformType?: string,

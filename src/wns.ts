@@ -3,8 +3,7 @@ import Synth from './Synth';
 import { Noise } from './Noise';
 import MultiSampler from './MultiSampler';
 import {IFreqBin} from '../tools/spectrumPeakParser';
-import utils from './utils';
-import { getSequentialRandomIndex } from './utils';
+import { getSequentialRandomIndex, flipCoin, choose } from './utils';
 
 import spectralData from './spectralData.json';
 
@@ -39,7 +38,7 @@ const WNS = (config?: IWNSConfig) => {
       { files: [ config.samplePath + "piano3-814.mp3" ], freq: 814 },
     ],
   };
-  const melodyOscillators = Array(populationSize).fill(0).map(() => utils.flipCoin() ? new MultiSampler( context, multiSamplerOpts ) : new Synth(context));
+  const melodyOscillators = Array(populationSize).fill(0).map(() => flipCoin() ? new MultiSampler( context, multiSamplerOpts ) : new Synth(context));
   const sourceSamples = backgroundSamples.map( sampleData => new MultiSampler(context, {
     samples: [
       { files: [ config.samplePath + sampleData.audioFile ], freq: 1 },
@@ -84,8 +83,8 @@ const WNS = (config?: IWNSConfig) => {
   let lowDroneIsPlaying = false;
   const playNewScene = () => {
     // Occasionally we want to pause for a moment to play an interlude in silence
-    const playInterlude = utils.flipCoin(0.80);
-    const playLowDrone = utils.flipCoin(0.85);
+    const playInterlude = flipCoin(0.80);
+    const playLowDrone = flipCoin(0.85);
 
     if(playInterlude && !interludeJustPlayed) {
       interludeJustPlayed = true;
@@ -141,7 +140,7 @@ const WNS = (config?: IWNSConfig) => {
       maxGenerations: 2,
       target, // in frequency
       timeBetweenEvents: () => (Math.random() * 15) + 10,
-      gapBetweenEvents: () => utils.choose([25,10]),
+      gapBetweenEvents: () => choose([25,10]),
       melodyOscillators,
       chordOscillators,
       onFinish: playNewScene

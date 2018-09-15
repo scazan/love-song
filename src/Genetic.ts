@@ -1,5 +1,5 @@
 
-import utils from "./utils";
+import { flipCoin } from "./utils";
 
 
 class Genetic {
@@ -51,7 +51,7 @@ class Genetic {
     const topGenerationScore: number = scores[indexOfHighestScore];
 
 
-    const coinFlipForMutate = utils.flipCoin(0.25);
+    const coinFlipForMutate = flipCoin(0.25);
 
     if(coinFlipForMutate) {
       indexOfNextHighestScore = Math.floor(Math.random() * scores.length);
