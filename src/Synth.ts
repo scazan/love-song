@@ -15,7 +15,7 @@ const makeDistortionCurve = amount => {
 
 
 import {ISoundPlayer, IPlayOptions} from './SoundPlayer';
-import utils from './utils';
+import { flipCoin } from './utils';
 
 interface ISynthOptions {
   waveformType?: string,
@@ -51,7 +51,7 @@ class Synth implements ISoundPlayer {
     //this.panner.connect(this.context.destination);
     this.waveShaper.connect(this.context.destination);
 
-    this.oscillator.type = this.config.waveformType ? this.config.waveformType : utils.flipCoin() ? 'triangle' : 'sine';
+    this.oscillator.type = this.config.waveformType ? this.config.waveformType : flipCoin() ? 'triangle' : 'sine';
     this.gainNode.gain.value = 0;
   }
 

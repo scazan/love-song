@@ -1,55 +1,48 @@
 
-const utils = {
-  mtof: (note: number): number => Math.pow(2, (note)/12) * 440,
+export const mtof = (note: number): number => Math.pow(2, (note)/12) * 440;
 
-  ftom: (note: number): number => Math.sqrt(note/440)/12,
+export const ftom = (note: number): number => Math.sqrt(note/440)/12;
 
-  choose: (array: Array<any>): any => {
+export const choose = (array: Array<any>): any => {
     return array[Math.floor(Math.random() * array.length)];
-  },
+  };
 
-
-
-  getRateFromFrequencies: (freq, baseFreq): number => {
-    return freq/baseFreq;
-  },
-
-  getClosestMember: (subject, set) => {
-    return set.reduce( (accum, member) => {
-      const prevDistance = accum - subject;
-      const currentDistance = member - subject;
-
-      return Math.abs( currentDistance ) < Math.abs( prevDistance ) ? member : accum;
-    }, set[0]);
-  },
-
-  findInCollection: (collection, predicateFunction) => {
-    return collection.reduce( (accum, member) => predicateFunction(member) ? member : accum );
-  },
-
-  mapToDomain: (set, domain) => {
-    const setOffset = Math.min(...domain) - Math.min(...set);
-    const domainRange = ( Math.max(...domain) - Math.min(...domain) );
-    const setRange = ( Math.max(...set) - Math.min(...set) );
-
-    return set.map( member => utils.getClosestMember( (( (member - Math.min(...set)) / setRange) * domainRange ) + setOffset, domain));
-  },
-
-  // TODO: I did the true/false backwards on this but everything uses it this way.
-  flipCoin: (probability=0.5): boolean => (Math.random() < probability) ? false : true,
-
-  makeFunction: (value): Function => {
-    if(typeof value === "function") {
-      return value;
-    }
-    else {
-      return () => value;
-    }
-  }
-
+export const getRateFromFrequencies = (freq, baseFreq): number => {
+  return freq/baseFreq;
 };
 
-export default utils;
+export const getClosestMember = (subject, set) => {
+  return set.reduce( (accum, member) => {
+    const prevDistance = accum - subject;
+    const currentDistance = member - subject;
+
+    return Math.abs( currentDistance ) < Math.abs( prevDistance ) ? member : accum;
+  }, set[0]);
+};
+
+export const findInCollection = (collection, predicateFunction) => {
+  return collection.reduce( (accum, member) => predicateFunction(member) ? member : accum );
+};
+
+export const mapToDomain = (set, domain) => {
+  const setOffset = Math.min(...domain) - Math.min(...set);
+  const domainRange = ( Math.max(...domain) - Math.min(...domain) );
+  const setRange = ( Math.max(...set) - Math.min(...set) );
+
+  return set.map( member => getClosestMember( (( (member - Math.min(...set)) / setRange) * domainRange ) + setOffset, domain));
+};
+
+  // TODO: I did the true/false backwards on this but everything uses it this way.
+export const flipCoin = (probability=0.5): boolean => (Math.random() < probability) ? false : true;
+
+export const makeFunction = (value): Function => {
+  if(typeof value === "function") {
+    return value;
+  }
+  else {
+    return () => value;
+  }
+};
 
 export const windex = (weights: Array<number>): number => {
   let sumOfWeights = weights.reduce( (prev, curr) => prev + curr);
@@ -103,5 +96,5 @@ export const mod = (num, modulo) => (num % modulo + modulo) % modulo;
 export const getSequentialRandomIndex = ( lastIndex: number, length: number ): number => {
   const possibleIndexes = Array(length).fill(0).map( (item,i) => i).filter(item => item !== lastIndex);
 
-  return utils.choose(possibleIndexes);
+  return choose(possibleIndexes);
 };

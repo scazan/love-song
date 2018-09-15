@@ -3,8 +3,7 @@ import { Pmarkov, Pgenetic } from './patterns';
 import Synth from './Synth';
 import {ISoundPlayer} from './SoundPlayer';
 import {IFreqBin} from '../tools/spectrumPeakParser';
-import { mod } from './utils';
-import utils from './utils';
+import { mod, makeFunction, mapToDomain, flipCoin } from './utils';
 
 export interface ISpectrumConfig {
   audioFile: string,
@@ -32,8 +31,8 @@ export class Scene {
   public constructor(config: ISceneConfig) {
     this.config = config;
 
-    this.config.timeBetweenEvents = utils.makeFunction(this.config.timeBetweenEvents);
-    this.config.gapBetweenEvents = utils.makeFunction(this.config.gapBetweenEvents);
+    this.config.timeBetweenEvents = makeFunction(this.config.timeBetweenEvents);
+    this.config.gapBetweenEvents = makeFunction(this.config.gapBetweenEvents);
     this.notes = Pgenetic(config.initialPopulation, config.target);
     this.config.maxGenerations = config.maxGenerations;
     this.currentGeneration = 0;
@@ -74,7 +73,7 @@ export class Scene {
     const newNotes = notes;
 
     // Taken from the sequence of pitches in "Forever in Blue Jeans" by Neil Diamond
-    const idealMelody = utils.mapToDomain([0,4,2,0,7,4,2,7,7,4,2,2,4,4,2,0], newNotes);
+    const idealMelody = mapToDomain([0,4,2,0,7,4,2,7,7,4,2,2,4,4,2,0], newNotes);
     const randomShiftAmount = Math.floor(Math.random() * (idealMelody.length));
 
     const initialState = [];
@@ -89,8 +88,8 @@ export class Scene {
       const octave = Math.ceil(Math.random() * 3) + Math.ceil(Math.random() * 3 ) + 2;
       const nextNote = markovMelody.next().value;
 
-      //if(nextNote !== undefined && utils.flipCoin(0.75) ) { // Sometimes probablities are zero, so we'll get an undefined next state
-      if(nextNote !== undefined && utils.flipCoin(0.55) ) { // Sometimes probablities are zero, so we'll get an undefined next state
+      //if(nextNote !== undefined && flipCoin(0.75) ) { // Sometimes probablities are zero, so we'll get an undefined next state
+      if(nextNote !== undefined && flipCoin(0.55) ) { // Sometimes probablities are zero, so we'll get an undefined next state
         //console.log('playing note', nextNote);
         this.config.melodyOscillators[i % this.config.melodyOscillators.length].play({
           freq: nextNote/octave,

@@ -1,5 +1,5 @@
 import {Howl, Howler} from 'howler';
-import utils from './utils';
+import { getRateFromFrequencies, getClosestMember, findInCollection } from './utils';
 import {ISoundPlayer, IPlayOptions, ISample} from './SoundPlayer';
 
 interface IPlayer {
@@ -25,7 +25,7 @@ class MultiSampler implements ISoundPlayer {
     const samplePlayer = this.findClosestSamplePlayer( freq );
     const currentlyPlayingSampleID = samplePlayer.player.play();
     samplePlayer.player.loop( false, currentlyPlayingSampleID );
-    samplePlayer.player.rate( utils.getRateFromFrequencies( freq, samplePlayer.baseFreq ), currentlyPlayingSampleID );
+    samplePlayer.player.rate( getRateFromFrequencies( freq, samplePlayer.baseFreq ), currentlyPlayingSampleID );
     // some stupid basic pyschoacoustic shaping
     if(freq > 200) gain = gain*0.2;
     samplePlayer.player.fade( 0, gain * vol, 200, currentlyPlayingSampleID );
@@ -50,8 +50,8 @@ class MultiSampler implements ISoundPlayer {
 
   private findClosestSamplePlayer( freq:number ): IPlayer {
     // Can only get the closest frequency in the set of Players' frequencies so get that frequency, then filter the players
-    const closestPlayerFrequency = utils.getClosestMember(freq, this.players.map( player => player.baseFreq) );
-    return utils.findInCollection( this.players, member => member === closestPlayerFrequency );
+    const closestPlayerFrequency = getClosestMember(freq, this.players.map( player => player.baseFreq) );
+    return findInCollection( this.players, member => member === closestPlayerFrequency );
   }
 }
 
