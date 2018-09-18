@@ -54,6 +54,22 @@ const WNS = (config?: IWNSConfig) => {
     new Noise(context)
   );
 
+  const getProminentFrequencies = spectrum => spectrum
+    .reduce( (accum: IFreqBin[], bin: IFreqBin) => accum[0].magnitude < bin.magnitude ? [ bin ] : accum, [{freq: 0, magnitude: -100}])
+    .map( bin => bin.freq)
+    .map( ( strongestFreq: number ) => Array(spectrum.length).fill(0).map( (item, i) => {
+      const harmonic = strongestFreq * (i+1);
+      const highestFreq = 7000;
+      if (harmonic > highestFreq) {
+        const divisor = Math.ceil(harmonic / highestFreq);
+        return harmonic / divisor;
+      }
+      else {
+        return harmonic;
+      }
+    })
+    )[0];
+
   const playBells = () => {
     const duration = 45;
     bells.forEach( (bell, i) => {
@@ -72,7 +88,6 @@ const WNS = (config?: IWNSConfig) => {
 
   const playDrone = () => {
     lowDroneIsPlaying = true;
-    console.log('playing drone...');
     setTimeout(() => { lowDroneIsPlaying = false; }, 330 * 1000); // Low Drone last 300*1000 milliseconds, add an extra 30 seconds after to decrease repetition
     lowDronePlayer.play({freq: 1, time: 300 * 1000, vol: 0.70});
   };
@@ -108,25 +123,8 @@ const WNS = (config?: IWNSConfig) => {
     sampleIndex = getSequentialRandomIndex(sampleIndex, backgroundSamples.length);
     //const target = [193, 423, 1668, 2333, 2665, 3078, 4038, 6319, 193+1, 423+1, 1668+1, 2333+1, 2665+1, 3078+1, 4038+1, 6319+1 ]; // in frequency
     const backgroundSample = backgroundSamples[sampleIndex];
-    console.log(backgroundSample.audioFile);
     const initialPopulation = Array(80).fill( backgroundSample.spectrum.map( bin => bin.freq) );
-
-    // Target is the overtones of the most prominent frequency in the spectrum
-    const target = backgroundSample.spectrum
-      .reduce( (accum: IFreqBin[], bin: IFreqBin) => accum[0].magnitude < bin.magnitude ? [ bin ] : accum, [{freq: 0, magnitude: -100}])
-      .map( bin => bin.freq)
-      .map( ( strongestFreq: number ) => Array(backgroundSample.spectrum.length).fill(0).map( (item, i) => {
-        const harmonic = strongestFreq * (i+1);
-        const highestFreq = 7000;
-        if (harmonic > highestFreq) {
-          const divisor = Math.ceil(harmonic / highestFreq);
-          return harmonic / divisor;
-        }
-        else {
-          return harmonic;
-        }
-      })
-      )[0];
+    const target = getProminentFrequencies(backgroundSample.spectrum); // Target is the overtones of the most prominent frequency in the spectrum
 
     const sceneConfig: ISceneConfig = {
       initialPopulation: initialPopulation.map(
@@ -144,7 +142,7 @@ const WNS = (config?: IWNSConfig) => {
       melodyOscillators,
       chordOscillators,
       onFinish: playNewScene
-    }
+    };
 
     sourceSamples[sampleIndex].play({freq: 1, time: 60 * 3 * 1000, vol: 0.23});
 

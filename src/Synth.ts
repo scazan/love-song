@@ -48,7 +48,6 @@ class Synth implements ISoundPlayer {
     this.oscillator.connect(this.gainNode);
     this.gainNode.connect(this.panner);
     this.panner.connect(this.waveShaper);
-    //this.panner.connect(this.context.destination);
     this.waveShaper.connect(this.context.destination);
 
     this.oscillator.type = this.config.waveformType ? this.config.waveformType : flipCoin() ? 'triangle' : 'sine';

@@ -1,8 +1,7 @@
-
-import { Pmarkov, Pgenetic } from './patterns';
 import Synth from './Synth';
-import {ISoundPlayer} from './SoundPlayer';
-import {IFreqBin} from '../tools/spectrumPeakParser';
+import { Pmarkov, Pgenetic } from './patterns';
+import { ISoundPlayer } from './SoundPlayer';
+import { IFreqBin } from '../tools/spectrumPeakParser';
 import { mod, makeFunction, mapToDomain, flipCoin } from './utils';
 
 export interface ISpectrumConfig {
@@ -53,7 +52,6 @@ export class Scene {
 
     this.playMelody(newNotes, this.currentGeneration);
 
-    //console.log('GENETIC GENERATION: ', this.currentGeneration, nextGen);
     if(this.currentGeneration <= (this.config.maxGenerations-1) ) {
       window.setTimeout(() => {
         this.currentGeneration++;
