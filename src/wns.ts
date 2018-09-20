@@ -88,7 +88,7 @@ const WNS = (config?: IWNSConfig) => {
 
   const playDrone = () => {
     lowDroneIsPlaying = true;
-    setTimeout(() => { lowDroneIsPlaying = false; }, 330 * 1000); // Low Drone last 300*1000 milliseconds, add an extra 30 seconds after to decrease repetition
+    setTimeout(() => { lowDroneIsPlaying = false; }, 330 * 1000); // Low Drone lasts 300*1000 milliseconds, add an extra 30 seconds after to decrease repetition
     lowDronePlayer.play({freq: 1, time: 300 * 1000, vol: 0.70});
   };
 
@@ -150,7 +150,7 @@ const WNS = (config?: IWNSConfig) => {
     new Scene(sceneConfig).play();
   };
 
-  //playNewScene();
+  // playNewScene();
   playBells();
 
 };
