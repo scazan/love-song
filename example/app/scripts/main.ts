@@ -1,5 +1,5 @@
 
-const WNS = require('../../../build/wns').WNS;
+const WNS = require('../../../src/wns').WNS;
 
 WNS({
   samplePath: "samples/",

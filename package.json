@@ -6,6 +6,9 @@
   "scripts": {
     "build": "webpack",
     "dev": "webpack  --progress --colors --watch",
+    "example": "npm run bootstrap && npm run buildSCSS && webpack --progress --colors --watch --config webpack.example.js & http-server ./example/dist",
+    "buildSCSS": "./example/buildScripts/buildSCSS.sh",
+    "bootstrap": "./example/buildScripts/bootstrap.sh",
     "parseSpectrum": "./node_modules/ts-node/dist/bin.js ./tools/spectrumPeakParser.ts"
   },
   "repository": {

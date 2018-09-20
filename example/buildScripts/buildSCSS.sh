@@ -11,7 +11,7 @@ sass ./app/styles/main.scss ./server/dist/styles/main.css
 fileName=""
 for scssFile in $(find ./app/scripts -name '*.scss' ! -path '*bower_components*') ; do
 	fileName=${scssFile##*/}
-	sass ${scssFile} >> ./server/dist/styles/main.css
+	sass ${scssFile} >> ./example/dist/styles/main.css
 done
 
 echo -e $'\e[32m''SCSS files built'
