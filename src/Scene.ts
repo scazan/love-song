@@ -47,7 +47,7 @@ export class Scene {
     let k = (Math.random() > 0.5) ? 0 : 1;
     this.config.chordOscillators.map((osc) => {
       const octave = Math.ceil(Math.random() * 5);
-      osc.play({freq: newNotes[i]/octave, time: this.config.timeBetweenEvents(), pan: ((k%2)*2) - 1, vol: 0.2}); i++; k++;
+      osc.play({freq: newNotes[i]/octave, time: this.config.timeBetweenEvents(), pan: ((k%2)*2) - 1, vol: 0.45}); i++; k++;
     });
 
     this.playMelody(newNotes, this.currentGeneration);
@@ -93,7 +93,7 @@ export class Scene {
           freq: nextNote/octave,
           time: 1 + (Math.random() * 6),
           pan: 0,
-          vol: 0.15
+          vol: 0.35
         });
       }
       i++;
