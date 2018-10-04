@@ -2,7 +2,7 @@ import { Scene, ISceneConfig } from './Scene';
 import Synth from './Synth';
 import { Noise } from './Noise';
 import MultiSampler from './MultiSampler';
-import {IFreqBin} from '../tools/spectrumPeakParser';
+import { IFreqBin } from '../tools/spectrumPeakParser';
 import { getSequentialRandomIndex, flipCoin, choose } from './utils';
 
 import spectralData from './spectralData.json';
@@ -144,7 +144,7 @@ const WNS = (config?: IWNSConfig) => {
       onFinish: playNewScene
     };
 
-    sourceSamples[sampleIndex].play({freq: 1, time: 60 * 3 * 1000, vol: 0.23});
+    sourceSamples[sampleIndex].play({freq: 1, time: 60 * 3 * 1000, vol: 0.28});
 
     // Start the scene
     new Scene(sceneConfig).play();

@@ -5,7 +5,6 @@
 const Markov = require("markovn").default;
 import { Genetic } from "./Genetic";
 
-
 export const Pattern = (pattern) => [() => pattern.next().value];
 
 export const Pseq = function* Pseq(values: Array<any>, repetitions: number){
