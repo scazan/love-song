@@ -32,6 +32,7 @@
     "markovn": "^1.0.1",
     "ts-node": "^5.0.1",
     "typescript": "^2.5.3",
-    "webpack": "^3.12.0"
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2"
   }
 }
