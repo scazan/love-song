@@ -1,7 +1,9 @@
 
 const WNS = require('../../../src/wns').WNS;
 
-WNS({
-  samplePath: "samples/",
-});
-
+const playButton = document.querySelector('.play') as HTMLElement;
+playButton.onclick = () => {
+  WNS({
+    samplePath: "samples/",
+  });
+};
