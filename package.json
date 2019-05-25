@@ -4,9 +4,9 @@
   "description": "CareOf Generative Piece",
   "main": "build/wns.js",
   "scripts": {
-    "build": "webpack",
-    "dev": "webpack  --progress --colors --watch",
-    "example": "npm run bootstrap && npm run buildSCSS && webpack --progress --colors --watch --config webpack.example.js & http-server ./example/dist",
+    "build": "webpack --progress --colors --display-error-details",
+    "dev": "webpack  --progress --colors --watch --display-error-details",
+    "example": "npm run bootstrap && webpack --progress --colors --watch --config webpack.example.js & http-server ./example/dist",
     "buildSCSS": "./example/buildScripts/buildSCSS.sh",
     "bootstrap": "./example/buildScripts/bootstrap.sh",
     "parseSpectrum": "./node_modules/ts-node/dist/bin.js ./tools/spectrumPeakParser.ts"
@@ -28,8 +28,14 @@
   },
   "devDependencies": {
     "awesome-typescript-loader": "^3.2.3",
+    "css-loader": "^2.1.1",
+    "html-webpack-plugin": "^3.2.0",
     "http-server": "^0.11.1",
     "markovn": "^1.0.1",
+    "mini-css-extract-plugin": "^0.6.0",
+    "node-sass": "^4.12.0",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
     "ts-node": "^5.0.1",
     "typescript": "^2.5.3",
     "webpack": "^4.20.2",

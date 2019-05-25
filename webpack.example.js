@@ -1,4 +1,5 @@
 
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 module.exports = {
@@ -11,9 +12,18 @@ module.exports = {
   resolve: {
     extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: path.join('example', 'app', 'index.html'),
+    }),
+  ],
   devtool: '#inline-source-map',
   module: {
     rules: [
+      {
+        test: /\.(s*)css$/,
+        use: ['style-loader', 'css-loader', 'sass-loader']
+      },
       {
         test: /\.ts?$/,
         loader: 'awesome-typescript-loader'
