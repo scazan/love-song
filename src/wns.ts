@@ -16,6 +16,27 @@ const defaultConfig: IWNSConfig = {
   samplePath: "samples/",
 };
 
+// @ts-ignore
+const socket = io('http://127.0.0.1:8081');
+   socket.on('connect', function() {
+  // @ts-ignore
+  window.socket = socket;
+        // sends to socket.io server the host/port of oscServer
+        // and oscClient
+        socket.emit('config',
+            {
+                server: {
+                    port: 3333,
+                    host: '127.0.0.1'
+                },
+                client: {
+                    port: 57120,
+                    host: '127.0.0.1'
+                }
+            }
+        );
+    });
+
 const WNS = (config?: IWNSConfig) => {
   config = config ? {...defaultConfig, ...config} : defaultConfig;
 

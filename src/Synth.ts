@@ -86,26 +86,34 @@ class Synth implements ISoundPlayer {
     if(freq > 200) gain = gain*0.12;
     if(freq > 6000) gain = gain*0.08;
     panner.pan.value = pan;
-    oscillator.start(0);
-    gainNode.gain.setTargetAtTime(vol * gain * (0.55 - (Math.random() * 0.01)), this.context.currentTime, time * 0.85 );
+    // oscillator.start(0);
+    const targetGain = vol * gain * (0.55 - (Math.random() * 0.01));
+    const attack = time * 0.85;
+    // gainNode.gain.setTargetAtTime(targetGain, this.context.currentTime, attack);
 
+    const duration = (time - (time*0.25)) * 1000
+    const decay = time * 0.25;
     var self = this;
     window.setTimeout(function() {
-      self.stop(time * 0.25);
-    }, (time - (time*0.25)) * 1000);
+      // self.stop(decay);
+    }, duration);
 
+
+    console.log(targetGain, duration, freq, attack, decay, pan);
+    // @ts-ignore
+    window.socket.emit('message', `/synth ${ targetGain } ${ duration } ${ freq } ${ attack } ${ decay } ${ pan }`)
     return this;
   }
 
   public stop(time) {
-    const context = this.context;
-    const {
-      oscillator,
-      gainNode,
-    } = this.synthNodes;
+    // const context = this.context;
+    // const {
+      // oscillator,
+      // gainNode,
+    // } = this.synthNodes;
 
-    gainNode.gain.setTargetAtTime(0, context.currentTime, time*0.9 );
-    oscillator.stop(context.currentTime + ( time * 4 ));
+    // gainNode.gain.setTargetAtTime(0, context.currentTime, time*0.9 );
+    // oscillator.stop(context.currentTime + ( time * 4 ));
 
     return this;
   }
